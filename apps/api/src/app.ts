@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { config } from './config.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { cookieParser } from './middleware/cookies.js';
 import { authRouter } from './routes/auth.routes.js';
 import { categoriesRouter } from './routes/categories.routes.js';
 import { programsRouter } from './routes/programs.routes.js';
@@ -28,6 +29,7 @@ app.use(
 );
 
 app.use(express.json());
+app.use(cookieParser);
 
 // Public Health Check (Per MVP blueprint)
 app.get('/health', (req, res) => {

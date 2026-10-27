@@ -23,6 +23,12 @@ import {
   BookOpen,
   GraduationCap,
   ExternalLink,
+  Lock,
+  Mail,
+  Eye,
+  EyeOff,
+  LogOut,
+  Smartphone,
 } from 'lucide-react';
 
 const API_BASE = 'http://localhost:4000';
@@ -168,9 +174,18 @@ interface Question {
 }
 
 export default function App() {
+  const [currentUser, setCurrentUser] = useState<StaffUser | null>(null);
+  const [authChecking, setAuthChecking] = useState(true);
   const [currentRole, setCurrentRole] = useState<StaffRole>('SUPER_ADMINISTRATOR');
   const [activeSection, setActiveSection] = useState<'overview' | 'payments' | 'questions' | 'catalog' | 'users' | 'audit'>('overview');
   const [roleModalOpen, setRoleModalOpen] = useState(false);
+
+  // Admin login form state
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [loginLoading, setLoginLoading] = useState(false);
 
   // Stats
   const [stats, setStats] = useState({
@@ -235,17 +250,152 @@ export default function App() {
     },
   ]);
 
-  // Load API stats if available
+  // Check persistent session on mount
   useEffect(() => {
-    fetchStats();
-  }, [currentRole]);
+    checkAuth();
+  }, []);
+
+  const checkAuth = async () => {
+    setAuthChecking(true);
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/auth/me`, {
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          if (json.data.role === 'STUDENT') {
+            setLoginError('Access Denied: Student accounts do not have staff administrator privileges.');
+            setCurrentUser(null);
+          } else {
+            setCurrentUser(json.data);
+            setCurrentRole(json.data.role as StaffRole);
+            fetchStats();
+          }
+        }
+      }
+    } catch {
+      // API offline
+    } finally {
+      setAuthChecking(false);
+    }
+  };
+
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError(null);
+    setLoginLoading(true);
+
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          identifier: loginEmail.trim(),
+          password: loginPassword,
+        }),
+      });
+
+      const json = await res.json();
+      if (json.success && json.data?.user) {
+        const u = json.data.user;
+        if (u.role === 'STUDENT') {
+          setLoginError('Access Denied: Student accounts do not have staff administrator privileges.');
+          await fetch(`${API_BASE}/api/v1/auth/logout`, { method: 'POST', credentials: 'include' });
+          return;
+        }
+        setCurrentUser(u);
+        setCurrentRole(u.role as StaffRole);
+        fetchStats();
+      } else {
+        setLoginError(json.error?.message || 'Login failed. Please check credentials.');
+      }
+    } catch {
+      // Local fallback for offline testing
+      const matching = Object.values(DEMO_STAFF).find(
+        (s) => s.email.toLowerCase() === loginEmail.trim().toLowerCase()
+      );
+      if (matching) {
+        if (matching.role === 'STUDENT') {
+          setLoginError('Access Denied: Student accounts cannot access the Staff Administration Console.');
+        } else {
+          setCurrentUser(matching);
+          setCurrentRole(matching.role);
+        }
+      } else {
+        setLoginError('Could not reach ExitPrep API server. Ensure server is running.');
+      }
+    } finally {
+      setLoginLoading(false);
+    }
+  };
+
+  const handleAdminLogout = async () => {
+    try {
+      await fetch(`${API_BASE}/api/v1/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch {
+      // offline
+    }
+    setCurrentUser(null);
+    setLoginEmail('');
+    setLoginPassword('');
+    setLoginError(null);
+  };
+
+  const loginAsDemoStaff = async (roleKey: StaffRole) => {
+    const staff = DEMO_STAFF[roleKey];
+    setLoginEmail(staff.email);
+    const pwd = roleKey === 'SUPER_ADMINISTRATOR' ? 'Admin@ExitPrep2026!' : 'ExitPrep@2026!';
+    setLoginPassword(pwd);
+    setLoginError(null);
+    setLoginLoading(true);
+
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          email: staff.email,
+          password: pwd,
+        }),
+      });
+      const json = await res.json();
+      if (json.success && json.data?.user) {
+        const u = json.data.user;
+        if (u.role === 'STUDENT') {
+          setLoginError('Access Denied: Student accounts do not have staff administrator privileges.');
+          await fetch(`${API_BASE}/api/v1/auth/logout`, { method: 'POST', credentials: 'include' });
+          return;
+        }
+        setCurrentUser(u);
+        setCurrentRole(u.role as StaffRole);
+        fetchStats();
+        return;
+      } else {
+        setLoginError(json.error?.message || 'Authentication rejected');
+      }
+    } catch {
+      // offline fallback
+      if (roleKey === 'STUDENT') {
+        setLoginError('Access Denied: Student accounts do not have staff administrator privileges.');
+      } else {
+        setCurrentUser(staff);
+        setCurrentRole(roleKey);
+      }
+    } finally {
+      setLoginLoading(false);
+    }
+  };
 
   const fetchStats = async () => {
     try {
       const res = await fetch(`${API_BASE}/api/v1/admin/dashboard`, {
-        headers: {
-          Authorization: `Bearer mock-token-for-dev`,
-        },
+        credentials: 'include',
       });
       const json = await res.json();
       if (json.success && json.data?.stats) {
@@ -291,6 +441,200 @@ export default function App() {
   const pendingQuestionsCount = questions.filter((q) => q.status === 'PENDING_REVIEW').length;
   const currentRoleConfig = ROLE_CONFIGS[currentRole];
   const CurrentRoleIcon = currentRoleConfig.icon;
+
+  if (authChecking) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col items-center justify-center p-4">
+        <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-3 shadow-lg shadow-emerald-950/60 animate-pulse">
+          <Shield className="w-6 h-6" />
+        </div>
+        <p className="text-xs text-slate-400 font-medium">Verifying staff credentials & session security...</p>
+      </div>
+    );
+  }
+
+  if (!currentUser) {
+    return (
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-center items-center p-3 sm:p-6 font-sans">
+        <div className="w-full max-w-md bg-slate-900/90 border border-slate-800 rounded-3xl shadow-2xl overflow-hidden relative backdrop-blur-md">
+          {/* Top Emerald Gradient Line */}
+          <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600"></div>
+
+          {/* Header */}
+          <div className="text-center pt-7 px-5 sm:px-7 pb-2">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-800 text-white flex items-center justify-center mx-auto mb-3 shadow-lg shadow-emerald-950/60 ring-4 ring-emerald-500/10">
+              <Shield className="w-7 h-7" />
+            </div>
+            <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/80 text-[10px] sm:text-[11px] font-black uppercase tracking-wider mb-2">
+              <span>ExitPrep Ethiopia 🇪🇹</span>
+            </div>
+            <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+              Staff Operations Portal
+            </h1>
+            <p className="text-xs text-slate-400 mt-1.5 max-w-xs mx-auto">
+              Restricted to authorized Ministry reviewers, department content editors & financial officers.
+            </p>
+          </div>
+
+          {/* Error Alert */}
+          {loginError && (
+            <div className="mx-5 sm:mx-7 mt-3 p-3 rounded-xl bg-rose-950/60 border border-rose-800/60 text-rose-300 text-xs font-semibold flex items-center gap-2">
+              <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
+              <span>{loginError}</span>
+            </div>
+          )}
+
+          {/* Form */}
+          <form onSubmit={handleAdminLogin} className="p-5 sm:p-7 pt-4 space-y-3.5 text-xs">
+            <div>
+              <label className="block text-[11px] font-bold text-slate-300 mb-1">Staff Email or Phone</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                  <Mail className="w-4 h-4" />
+                </div>
+                <input
+                  type="text"
+                  required
+                  placeholder="admin@exitprep.et or +2519..."
+                  value={loginEmail}
+                  onChange={(e) => setLoginEmail(e.target.value)}
+                  className="w-full pl-10 pr-3.5 py-2.5 bg-slate-950/80 focus:bg-slate-950 text-white placeholder:text-slate-500 text-xs rounded-xl border border-slate-700/80 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all outline-hidden min-h-[44px]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-1">
+                <label className="block text-[11px] font-bold text-slate-300">Staff Password</label>
+                <span className="text-[10px] text-slate-500 font-medium">
+                  {showPassword ? 'Visible' : 'Hidden'}
+                </span>
+              </div>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                  <Lock className="w-4 h-4" />
+                </div>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  required
+                  placeholder="••••••••••••••"
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  className="w-full pl-10 pr-11 py-2.5 bg-slate-950/80 focus:bg-slate-950 text-white placeholder:text-slate-500 text-xs rounded-xl border border-slate-700/80 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 font-mono transition-all outline-hidden min-h-[44px]"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200 transition-colors p-1"
+                >
+                  {showPassword ? <EyeOff className="w-4 h-4 text-emerald-400" /> : <Eye className="w-4 h-4 text-slate-500" />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loginLoading}
+              className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-lg shadow-emerald-950/40 transition-all active:scale-[0.99] flex items-center justify-center gap-2 min-h-[44px] disabled:opacity-50 cursor-pointer"
+            >
+              {loginLoading ? (
+                <>
+                  <RefreshCw className="w-4 h-4 animate-spin" />
+                  <span>Verifying Credentials...</span>
+                </>
+              ) : (
+                <>
+                  <Lock className="w-4 h-4" />
+                  <span>Sign In to Staff Console</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Quick Access Dev Testing Buttons */}
+          <div className="p-5 sm:p-7 pt-0 border-t border-slate-800/80 mt-2">
+            <p className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-2.5 pt-3">
+              ⚡ Quick Dev Login (Seeded RBAC Accounts):
+            </p>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => loginAsDemoStaff('SUPER_ADMINISTRATOR')}
+                className="p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700 text-left transition-all text-[11px] cursor-pointer"
+              >
+                <div className="font-bold text-emerald-400 flex items-center gap-1">
+                  <Shield className="w-3.5 h-3.5" />
+                  <span>Super Admin</span>
+                </div>
+                <div className="text-[10px] text-slate-400 truncate">Dr. Abebe Bekele</div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => loginAsDemoStaff('PAYMENT_ADMINISTRATOR')}
+                className="p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700 text-left transition-all text-[11px] cursor-pointer"
+              >
+                <div className="font-bold text-blue-400 flex items-center gap-1">
+                  <CreditCard className="w-3.5 h-3.5" />
+                  <span>Finance Officer</span>
+                </div>
+                <div className="text-[10px] text-slate-400 truncate">Tigist Haile</div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => loginAsDemoStaff('REVIEWER')}
+                className="p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700 text-left transition-all text-[11px] cursor-pointer"
+              >
+                <div className="font-bold text-amber-400 flex items-center gap-1">
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>Reviewer</span>
+                </div>
+                <div className="text-[10px] text-slate-400 truncate">Dr. Dawit Tadesse</div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => loginAsDemoStaff('CONTENT_EDITOR')}
+                className="p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-slate-700 text-left transition-all text-[11px] cursor-pointer"
+              >
+                <div className="font-bold text-purple-400 flex items-center gap-1">
+                  <FileText className="w-3.5 h-3.5" />
+                  <span>Content Editor</span>
+                </div>
+                <div className="text-[10px] text-slate-400 truncate">Selamawit Girma</div>
+              </button>
+            </div>
+
+            {/* Test Student Rejection Guard */}
+            <div className="mt-3">
+              <button
+                type="button"
+                onClick={() => loginAsDemoStaff('STUDENT')}
+                className="w-full p-2.5 rounded-xl bg-rose-950/30 hover:bg-rose-950/50 border border-rose-900/50 text-rose-300 text-left transition-all text-[11px] flex items-center justify-between cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4 text-rose-400 shrink-0" />
+                  <div>
+                    <span className="font-bold text-rose-300">Test Student Access Guard</span>
+                    <span className="block text-[10px] text-rose-400/80">Attempts login as student@exitprep.et</span>
+                  </div>
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-rose-950 border border-rose-800 text-rose-300">
+                  Expect 403
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <p className="text-[11px] text-slate-500 mt-4 text-center">
+          ExitPrep Ethiopia • Academic and COC Examination Security Framework
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
@@ -344,7 +688,7 @@ export default function App() {
             </div>
           </div>
 
-          {/* Right: Attractive Interactive Role Pill */}
+          {/* Right: Attractive Interactive Role Pill & Sign Out */}
           <div className="flex items-center gap-2">
             {/* Role Switcher Pill Button (Mobile & Desktop) */}
             <button
@@ -361,10 +705,20 @@ export default function App() {
               </div>
 
               <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-900/80 text-slate-300 font-mono hidden sm:inline">
-                {DEMO_STAFF[currentRole].fullName.split(' ')[0]}
+                {(currentUser?.fullName || DEMO_STAFF[currentRole].fullName).split(' ')[0]}
               </span>
 
               <ChevronDown className="w-3.5 h-3.5 text-slate-400 ml-0.5" />
+            </button>
+
+            {/* Sign Out Button */}
+            <button
+              onClick={handleAdminLogout}
+              aria-label="Sign out of operations console"
+              title="Sign out of operations console"
+              className="p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-slate-800 hover:border-rose-500/30 rounded-xl transition-all cursor-pointer min-h-[38px] min-w-[38px] flex items-center justify-center"
+            >
+              <LogOut className="w-4 h-4" />
             </button>
           </div>
         </div>
@@ -409,7 +763,7 @@ export default function App() {
                   <button
                     key={roleKey}
                     onClick={() => {
-                      setCurrentRole(roleKey);
+                      loginAsDemoStaff(roleKey);
                       setRoleModalOpen(false);
                     }}
                     className={`w-full text-left p-3 rounded-xl border transition-all flex items-start gap-3 active:scale-[0.99] ${

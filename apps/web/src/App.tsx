@@ -31,6 +31,7 @@ import {
   Receipt,
   Lock,
   Mail,
+  Smartphone,
   Eye,
   EyeOff,
 } from 'lucide-react';
@@ -39,9 +40,11 @@ const API_BASE = 'http://localhost:4000';
 
 interface UserProfile {
   id: string;
-  email: string;
+  email?: string;
+  phone?: string;
   fullName: string;
   role: string;
+  activeSubscription?: any;
 }
 
 interface QuestionOption {
@@ -139,10 +142,40 @@ export default function App() {
 
   const paymentFormRef = useRef<HTMLDivElement>(null);
 
-  // Load questions on mount
+  // Load questions and check persistent session on mount
   useEffect(() => {
     fetchQuestions();
+    checkCurrentUser();
   }, []);
+
+  const checkCurrentUser = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/auth/me`, {
+        credentials: 'include',
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success && json.data) {
+          setUser(json.data);
+        }
+      }
+    } catch {
+      // Offline fallback
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await fetch(`${API_BASE}/api/v1/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch {
+      // Offline fallback
+    }
+    setUser(null);
+    setToken(null);
+  };
 
   const fetchQuestions = async () => {
     setLoadingQuestions(true);
@@ -216,6 +249,12 @@ export default function App() {
     e.preventDefault();
     setAuthError(null);
 
+    const identifier = authEmail.trim();
+    if (!identifier) {
+      setAuthError('Please provide your email address or phone number.');
+      return;
+    }
+
     if (authMode === 'register' && authPassword !== authConfirmPassword) {
       setAuthError('Passwords do not match. Please verify both password fields.');
       return;
@@ -229,32 +268,42 @@ export default function App() {
     setAuthLoading(true);
 
     const endpoint = authMode === 'login' ? '/api/v1/auth/login' : '/api/v1/auth/register';
+    const isEmail = identifier.includes('@');
     const body =
       authMode === 'login'
-        ? { email: authEmail, password: authPassword }
-        : { email: authEmail, fullName: authName, password: authPassword, program: authProgram };
+        ? { identifier, password: authPassword }
+        : {
+            ...(isEmail ? { email: identifier } : { phone: identifier }),
+            fullName: authName,
+            password: authPassword,
+            program: authProgram,
+          };
 
     try {
       const res = await fetch(`${API_BASE}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(body),
       });
       const json = await res.json();
       if (json.success) {
         setUser(json.data.user);
-        setToken(json.data.tokens.accessToken);
+        if (json.data.tokens?.accessToken) {
+          setToken(json.data.tokens.accessToken);
+        }
         setShowAuthModal(false);
       } else {
         setAuthError(json.error?.message || 'Authentication failed');
       }
     } catch {
       // Smooth local developer fallback when API/DB is offline
-      if (authEmail) {
+      if (identifier) {
         const fallbackUser: UserProfile = {
           id: 'usr-student-' + Date.now().toString().slice(-4),
-          fullName: authName || authEmail.split('@')[0],
-          email: authEmail,
+          fullName: authName || identifier.split('@')[0],
+          email: isEmail ? identifier : undefined,
+          phone: !isEmail ? identifier : undefined,
           role: 'STUDENT',
         };
         setUser(fallbackUser);
@@ -272,7 +321,7 @@ export default function App() {
     e.preventDefault();
     setPaymentMsg(null);
 
-    if (!user || !token) {
+    if (!user) {
       setShowAuthModal(true);
       return;
     }
@@ -282,8 +331,9 @@ export default function App() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
+        credentials: 'include',
         body: JSON.stringify({
           planId: selectedPlanId,
           bankName,
@@ -313,7 +363,31 @@ export default function App() {
     setTimeout(() => setCopiedField(null), 2500);
   };
 
-  const loginDemoStudent = () => {
+  const loginDemoStudent = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/v1/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          email: 'student@exitprep.et',
+          password: 'ExitPrep@2026!',
+        }),
+      });
+      const json = await res.json();
+      if (json.success && json.data) {
+        setUser(json.data.user);
+        if (json.data.tokens?.accessToken) {
+          setToken(json.data.tokens.accessToken);
+        }
+        setShowAuthModal(false);
+        setAuthError(null);
+        return;
+      }
+    } catch {
+      // offline fallback
+    }
+
     const demoUser: UserProfile = {
       id: 'usr-student-01',
       fullName: 'Yared Tadesse',
@@ -427,7 +501,7 @@ export default function App() {
             <div className="w-full border-t border-slate-200"></div>
           </div>
           <div className="relative flex justify-center text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-            <span className="bg-white px-2">or with email credentials</span>
+            <span className="bg-white px-2">or with email or phone number</span>
           </div>
         </div>
       </div>
@@ -462,15 +536,19 @@ export default function App() {
         )}
 
         <div className="w-full min-w-0 max-w-full">
-          <label className="block text-[11px] font-bold text-slate-700 mb-1">Email Address</label>
+          <label className="block text-[11px] font-bold text-slate-700 mb-1">Email or Phone Number</label>
           <div className="relative w-full min-w-0 max-w-full">
             <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 z-10">
-              <Mail className="w-4 h-4 shrink-0" />
+              {authEmail && (authEmail.startsWith('09') || authEmail.startsWith('+') || /^\d+$/.test(authEmail)) ? (
+                <Smartphone className="w-4 h-4 shrink-0" />
+              ) : (
+                <Mail className="w-4 h-4 shrink-0" />
+              )}
             </div>
             <input
-              type="email"
+              type="text"
               required
-              placeholder="student@exitprep.et"
+              placeholder="e.g. 0911223344 or student@exitprep.et"
               value={authEmail}
               onChange={(e) => setAuthEmail(e.target.value)}
               className="w-full min-w-0 max-w-full block pl-10 pr-3.5 py-2.5 bg-slate-50/80 focus:bg-white text-slate-900 placeholder:text-slate-400 text-base sm:text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 transition-all outline-hidden min-h-[44px] box-border"
@@ -733,10 +811,7 @@ export default function App() {
                   </span>
                 </button>
                 <button
-                  onClick={() => {
-                    setUser(null);
-                    setToken(null);
-                  }}
+                  onClick={handleLogout}
                   className="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 min-h-[38px] min-w-[38px] flex items-center justify-center transition-colors"
                   title="Logout"
                 >
@@ -1748,7 +1823,7 @@ export default function App() {
                   </div>
                   <div className="truncate">
                     <h2 className="font-bold text-slate-900 text-base sm:text-lg truncate">{user.fullName}</h2>
-                    <p className="text-xs text-slate-500 truncate">{user.email}</p>
+                    <p className="text-xs text-slate-500 truncate">{user.email || user.phone}</p>
                     <span className="inline-block mt-1 text-[10px] sm:text-[11px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
                       Role: {user.role}
                     </span>
@@ -1767,10 +1842,7 @@ export default function App() {
                 </div>
 
                 <button
-                  onClick={() => {
-                    setUser(null);
-                    setToken(null);
-                  }}
+                  onClick={handleLogout}
                   className="w-full py-3 border border-slate-300 hover:bg-slate-100 text-slate-700 font-bold rounded-xl text-xs sm:text-sm transition-colors min-h-[44px]"
                 >
                   Sign Out

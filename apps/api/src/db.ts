@@ -14,14 +14,25 @@ import {
 // In-Memory Fallback State
 export interface MemoryUser {
   id: string;
-  email: string;
-  fullName: string;
+  email?: string;
   phone?: string;
+  fullName: string;
   passwordHash: string;
   role: UserRole;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface MemorySession {
+  id: string;
+  token: string;
+  userId: string;
+  userAgent?: string;
+  ipAddress?: string;
+  expiresAt: string;
+  revokedAt?: string;
+  createdAt: string;
 }
 
 export interface MemoryCategory {
@@ -143,6 +154,7 @@ export interface MemoryAuditLog {
 
 class InMemoryStore {
   users: MemoryUser[] = [];
+  sessions: MemorySession[] = [];
   categories: MemoryCategory[] = [];
   programs: MemoryProgram[] = [];
   questions: MemoryQuestion[] = [];

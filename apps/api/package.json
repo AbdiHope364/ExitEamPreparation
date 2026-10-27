@@ -7,6 +7,9 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "bootstrap:admin": "tsx src/scripts/bootstrap-admin.ts",
+    "test:auth": "tsx src/scripts/test-auth-flow.ts",
     "test": "echo \"API tests passing\""
   },
   "dependencies": {
