@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   BookOpen,
   Award,
+  GraduationCap,
   CheckCircle2,
   XCircle,
   Clock,
@@ -556,9 +557,17 @@ export default function App() {
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(16,185,129,0.14),rgba(255,255,255,0))] pointer-events-none"></div>
 
               <div className="relative max-w-3xl mx-auto text-center">
-                {/* Pill Badge (No icon, compact padding) */}
-                <div className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[10px] sm:text-xs font-extrabold uppercase tracking-wider mb-2.5 sm:mb-3 shadow-2xs">
-                  National University Exit & COC Platform
+                {/* Centered Hero Icon Badge */}
+                <div className="flex items-center justify-center mb-3">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-800 text-white flex items-center justify-center shadow-lg shadow-emerald-700/20 ring-4 ring-emerald-500/10">
+                    <GraduationCap className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+                  </div>
+                </div>
+
+                {/* Centered Pill Badge */}
+                <div className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[10px] sm:text-xs font-extrabold uppercase tracking-wider mb-2.5 sm:mb-3 shadow-2xs">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>National University Exit & COC Platform</span>
                 </div>
 
                 {/* Main Headline */}
