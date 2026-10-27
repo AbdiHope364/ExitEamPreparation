@@ -107,6 +107,44 @@ const FALLBACK_QUESTIONS: Question[] = [
   },
 ];
 
+const REGISTRATION_PROGRAMS = [
+  {
+    value: 'Accounting and Finance',
+    title: 'Accounting & Finance',
+    degree: 'BSc',
+    sub: 'Exit Exam Blueprint',
+    icon: Landmark,
+  },
+  {
+    value: 'Management',
+    title: 'Management',
+    degree: 'BA',
+    sub: 'Exit Exam Blueprint',
+    icon: Briefcase,
+  },
+  {
+    value: 'Economics',
+    title: 'Economics',
+    degree: 'BSc / BA',
+    sub: 'Exit Exam Blueprint',
+    icon: TrendingUp,
+  },
+  {
+    value: 'Marketing Management',
+    title: 'Marketing Management',
+    degree: 'BA',
+    sub: 'Exit Exam Blueprint',
+    icon: Megaphone,
+  },
+  {
+    value: 'Accounts & Budget Service Level IV',
+    title: 'Accounts & Budget Service',
+    degree: 'COC Level IV',
+    sub: 'Occupational Competency',
+    icon: Award,
+  },
+];
+
 export default function App() {
   const [activeTab, setActiveTab] = useState<'home' | 'catalog' | 'practice' | 'pricing' | 'profile'>('home');
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -125,6 +163,7 @@ export default function App() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [authLoading, setAuthLoading] = useState(false);
+  const [programSelectorOpen, setProgramSelectorOpen] = useState(false);
 
   // Practice state
   const [questions, setQuestions] = useState<Question[]>(FALLBACK_QUESTIONS);
@@ -415,8 +454,13 @@ export default function App() {
 
   const currentQ = questions[currentQIndex] || questions[0];
 
-  const renderAuthCard = (isModal: boolean) => (
-    <div className={`bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xl relative overflow-hidden w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md box-border ${isModal ? 'my-auto sm:my-0' : 'mx-auto'}`}>
+  const renderAuthCard = (isModal: boolean) => {
+    const selectedProg =
+      REGISTRATION_PROGRAMS.find((p) => p.value === authProgram) || REGISTRATION_PROGRAMS[0];
+    const SelectedProgIcon = selectedProg.icon;
+
+    return (
+      <div className={`bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xl relative overflow-hidden w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md box-border ${isModal ? 'my-auto sm:my-0' : 'mx-auto'}`}>
       {/* Top Emerald Gradient Accent */}
       <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600"></div>
 
@@ -456,6 +500,7 @@ export default function App() {
             onClick={() => {
               setAuthMode('login');
               setAuthError(null);
+              setProgramSelectorOpen(false);
             }}
             className={`py-2 text-xs font-bold rounded-lg transition-all min-h-[38px] ${
               authMode === 'login'
@@ -470,6 +515,7 @@ export default function App() {
             onClick={() => {
               setAuthMode('register');
               setAuthError(null);
+              setProgramSelectorOpen(false);
             }}
             className={`py-2 text-xs font-bold rounded-lg transition-all min-h-[38px] ${
               authMode === 'register'
@@ -515,7 +561,10 @@ export default function App() {
       )}
 
       {/* Form Fields with Blind Input Styling */}
-      <form onSubmit={handleAuthSubmit} className="p-4 sm:p-7 pt-3 space-y-3.5 text-xs w-full max-w-full min-w-0 box-border overflow-hidden">
+      <form onSubmit={handleAuthSubmit} className="p-4 sm:p-7 pt-3 space-y-3.5 text-xs w-full max-w-full min-w-0 box-border">
+        {/* Hidden input to ensure form values are accessible */}
+        <input type="hidden" name="program" value={authProgram} />
+
         {authMode === 'register' && (
           <div className="w-full min-w-0 max-w-full">
             <label className="block text-[11px] font-bold text-slate-700 mb-1">Full Name</label>
@@ -558,25 +607,108 @@ export default function App() {
 
         {authMode === 'register' && (
           <div className="w-full min-w-0 max-w-full">
-            <label className="block text-[11px] font-bold text-slate-700 mb-1">Degree Program / Blueprint</label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-[11px] font-bold text-slate-700">
+                Degree Program / Blueprint
+              </label>
+              <span className="text-[10px] text-emerald-700 font-extrabold uppercase">
+                {selectedProg.degree}
+              </span>
+            </div>
+
+            {/* Custom Interactive Dropdown / Collapsible Selector (100% physically constrained inside card) */}
             <div className="relative w-full min-w-0 max-w-full">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 z-10">
-                <BookOpen className="w-4 h-4 shrink-0" />
-              </div>
-              <select
-                value={authProgram}
-                onChange={(e) => setAuthProgram(e.target.value)}
-                className="w-full max-w-full min-w-0 block truncate appearance-none pl-10 pr-9 py-2.5 bg-slate-50/80 focus:bg-white text-slate-900 text-base sm:text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 transition-all outline-hidden min-h-[44px] cursor-pointer box-border"
+              {/* Trigger Button */}
+              <button
+                type="button"
+                onClick={() => setProgramSelectorOpen(!programSelectorOpen)}
+                className={`w-full min-w-0 max-w-full flex items-center justify-between px-3 sm:px-3.5 py-2.5 bg-slate-50/90 hover:bg-slate-100/90 text-slate-900 text-xs rounded-xl border transition-all outline-hidden min-h-[44px] cursor-pointer box-border ${
+                  programSelectorOpen
+                    ? 'border-emerald-600 ring-2 ring-emerald-500/20 bg-white'
+                    : 'border-slate-200'
+                }`}
               >
-                <option value="Accounting and Finance">Accounting & Finance (BSc)</option>
-                <option value="Management">Management (BA)</option>
-                <option value="Economics">Economics (BSc / BA)</option>
-                <option value="Marketing Management">Marketing Management (BA)</option>
-                <option value="Accounts & Budget Service Level IV">COC: Accounts Level IV</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400 z-10">
-                <ChevronDown className="w-4 h-4 shrink-0" />
-              </div>
+                <div className="flex items-center gap-2 min-w-0 truncate">
+                  <div className="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0">
+                    <SelectedProgIcon className="w-3.5 h-3.5" />
+                  </div>
+                  <span className="font-bold text-slate-900 text-xs truncate text-left">
+                    {selectedProg.title}
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-1.5 shrink-0 ml-1">
+                  <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 border border-emerald-200/80">
+                    {selectedProg.degree}
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-slate-400 transition-transform duration-200 shrink-0 ${
+                      programSelectorOpen ? 'rotate-180 text-emerald-600' : ''
+                    }`}
+                  />
+                </div>
+              </button>
+
+              {/* In-Card Expanded Selection List (100% inside card border, never overflows!) */}
+              {programSelectorOpen && (
+                <div className="mt-1.5 w-full min-w-0 max-w-full bg-white rounded-xl border border-slate-200/90 shadow-xl overflow-hidden p-1 space-y-1 animate-in fade-in duration-150 box-border z-30">
+                  <div className="px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-slate-400 border-b border-slate-100 mb-1 flex items-center justify-between">
+                    <span>Select Degree / Blueprint</span>
+                    <span className="text-emerald-700 font-bold">5 Available</span>
+                  </div>
+
+                  {REGISTRATION_PROGRAMS.map((prog) => {
+                    const isSelected = authProgram === prog.value;
+                    const ProgIcon = prog.icon;
+
+                    return (
+                      <button
+                        key={prog.value}
+                        type="button"
+                        onClick={() => {
+                          setAuthProgram(prog.value);
+                          setProgramSelectorOpen(false);
+                        }}
+                        className={`w-full min-w-0 max-w-full text-left p-2 rounded-lg transition-all flex items-center justify-between gap-2 box-border cursor-pointer ${
+                          isSelected
+                            ? 'bg-emerald-50 text-emerald-950 font-semibold border border-emerald-300/80 shadow-2xs'
+                            : 'hover:bg-slate-50 text-slate-700 border border-transparent'
+                        }`}
+                      >
+                        <div className="flex items-center gap-2 min-w-0 truncate">
+                          <div
+                            className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 ${
+                              isSelected
+                                ? 'bg-emerald-600 text-white'
+                                : 'bg-slate-100 text-slate-600'
+                            }`}
+                          >
+                            <ProgIcon className="w-3.5 h-3.5" />
+                          </div>
+
+                          <div className="min-w-0 truncate">
+                            <span className="text-xs block truncate font-medium">
+                              {prog.title}
+                            </span>
+                            <span className="text-[10px] text-slate-400 block truncate">
+                              {prog.sub}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0 ml-1">
+                          <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
+                            {prog.degree}
+                          </span>
+                          {isSelected && (
+                            <Check className="w-4 h-4 text-emerald-600 shrink-0 stroke-[2.5]" />
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -704,6 +836,7 @@ export default function App() {
       </div>
     </div>
   );
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">

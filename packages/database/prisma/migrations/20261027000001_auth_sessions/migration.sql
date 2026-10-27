@@ -9,3 +9,4 @@ CREATE UNIQUE INDEX IF NOT EXISTS "users_phone_key" ON "users"("phone");
 ALTER TABLE "sessions" ADD COLUMN IF NOT EXISTS "userAgent" TEXT;
 ALTER TABLE "sessions" ADD COLUMN IF NOT EXISTS "ipAddress" TEXT;
 CREATE INDEX IF NOT EXISTS "sessions_token_idx" ON "sessions"("token");
+
