@@ -1,0 +1,397 @@
+// ExitPrep Ethiopia — Prisma Schema
+// Mobile-first web platform for Ethiopian University Exit Exam & COC Competency Exam preparation
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Roles
+enum UserRole {
+  STUDENT
+  CONTENT_EDITOR
+  REVIEWER
+  PAYMENT_ADMINISTRATOR
+  SUPER_ADMINISTRATOR
+}
+
+// Exam Pathway Categories
+enum ExamCategoryType {
+  UNIVERSITY_EXIT_EXAM
+  COC_COMPETENCY_EXAM
+}
+
+// Question Status
+enum QuestionStatus {
+  DRAFT
+  PENDING_REVIEW
+  VERIFIED
+  REJECTED
+}
+
+// Question Difficulty Level
+enum DifficultyLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+// Attempt Status
+enum AttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+  EXPIRED
+  ABANDONED
+}
+
+// Subscription Tiers
+enum SubscriptionTier {
+  FREE
+  STANDARD_MONTHLY
+  PREMIUM_SEMESTER
+}
+
+// Subscription Status
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  PENDING_VERIFICATION
+  CANCELLED
+}
+
+// Supported Ethiopian Banks & Wallets
+enum PaymentMethod {
+  CBE
+  TELEBIRR
+  BOA
+  AWASH
+}
+
+// Payment Verification Status
+enum PaymentStatus {
+  SUBMITTED
+  VERIFIED
+  REJECTED
+}
+
+// ----------------------------------------------------
+// 1. Users and Authentication
+// ----------------------------------------------------
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  fullName     String
+  phone        String?
+  passwordHash String
+  role         UserRole  @default(STUDENT)
+  isActive     Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  sessions          Session[]
+  subscriptions     Subscription[]
+  paymentReceipts   PaymentReceipt[]
+  attempts          ExamAttempt[]
+  questionsAuthored Question[]       @relation("AuthoredQuestions")
+  questionsReviewed Question[]       @relation("ReviewedQuestions")
+  verifiedPayments  PaymentReceipt[] @relation("VerifiedPayments")
+  auditLogs         AuditLog[]
+
+  @@map("users")
+}
+
+model Session {
+  id        String    @id @default(uuid())
+  token     String    @unique
+  userId    String
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+// ----------------------------------------------------
+// 2. Academic & Occupational Catalog
+// ----------------------------------------------------
+
+model ExamCategory {
+  id          String           @id @default(uuid())
+  code        ExamCategoryType @unique
+  name        String
+  description String
+  isActive    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  programs Program[]
+
+  @@map("exam_categories")
+}
+
+model Program {
+  id             String   @id @default(uuid())
+  categoryId     String
+  name           String
+  code           String   @unique
+  level          String   @default("BSc / BA")
+  description    String
+  isConfigurable Boolean  @default(false)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  category ExamCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  courses  Course[]
+  exams    Exam[]
+
+  @@index([categoryId])
+  @@map("programs")
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  programId   String
+  name        String
+  code        String
+  description String?
+  orderIndex  Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  program Program @relation(fields: [programId], references: [id], onDelete: Cascade)
+  topics  Topic[]
+
+  @@index([programId])
+  @@map("courses")
+}
+
+model Topic {
+  id          String   @id @default(uuid())
+  courseId    String
+  name        String
+  code        String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  course    Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  questions Question[]
+
+  @@index([courseId])
+  @@map("topics")
+}
+
+// ----------------------------------------------------
+// 3. Question Bank & Review Pipeline
+// ----------------------------------------------------
+
+model Question {
+  id              String          @id @default(uuid())
+  topicId         String
+  stem            String
+  explanation     String
+  referenceSource String?
+  difficulty      DifficultyLevel @default(INTERMEDIATE)
+  status          QuestionStatus  @default(DRAFT)
+  isPublished     Boolean         @default(false)
+  rejectionReason String?
+  authorId        String?
+  reviewerId      String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  topic          Topic               @relation(fields: [topicId], references: [id], onDelete: Restrict)
+  author         User?               @relation("AuthoredQuestions", fields: [authorId], references: [id], onDelete: SetNull)
+  reviewer       User?               @relation("ReviewedQuestions", fields: [reviewerId], references: [id], onDelete: SetNull)
+  options        QuestionOption[]
+  examQuestions  ExamQuestion[]
+  attemptAnswers ExamAttemptAnswer[]
+
+  @@index([topicId])
+  @@index([status, isPublished])
+  @@map("questions")
+}
+
+model QuestionOption {
+  id          String  @id @default(uuid())
+  questionId  String
+  text        String
+  isCorrect   Boolean @default(false)
+  orderIndex  Int     @default(0)
+  explanation String?
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@map("question_options")
+}
+
+// ----------------------------------------------------
+// 4. Exams & Timed Attempts
+// ----------------------------------------------------
+
+model Exam {
+  id                  String   @id @default(uuid())
+  programId           String
+  title               String
+  description         String
+  durationMinutes     Int      @default(120)
+  passingScorePercent Float    @default(50.0)
+  totalQuestions      Int      @default(100)
+  isPublished         Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  program       Program        @relation(fields: [programId], references: [id], onDelete: Restrict)
+  examQuestions ExamQuestion[]
+  attempts      ExamAttempt[]
+
+  @@index([programId])
+  @@map("exams")
+}
+
+model ExamQuestion {
+  id         String @id @default(uuid())
+  examId     String
+  questionId String
+  orderIndex Int    @default(0)
+
+  exam     Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
+  question Question @relation(fields: [questionId], references: [id], onDelete: Restrict)
+
+  @@unique([examId, questionId])
+  @@index([examId])
+  @@map("exam_questions")
+}
+
+model ExamAttempt {
+  id               String        @id @default(uuid())
+  userId           String
+  examId           String
+  status           AttemptStatus @default(IN_PROGRESS)
+  scorePercent     Float?
+  totalCorrect     Int?
+  totalQuestions   Int           @default(0)
+  timeSpentSeconds Int           @default(0)
+  startedAt        DateTime      @default(now())
+  expiresAt        DateTime
+  submittedAt      DateTime?
+
+  user    User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exam    Exam                @relation(fields: [examId], references: [id], onDelete: Restrict)
+  answers ExamAttemptAnswer[]
+
+  @@index([userId])
+  @@index([examId])
+  @@map("exam_attempts")
+}
+
+model ExamAttemptAnswer {
+  id               String   @id @default(uuid())
+  attemptId        String
+  questionId       String
+  selectedOptionId String?
+  isCorrect        Boolean  @default(false)
+  createdAt        DateTime @default(now())
+
+  attempt  ExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  question Question    @relation(fields: [questionId], references: [id], onDelete: Restrict)
+
+  @@unique([attemptId, questionId])
+  @@index([attemptId])
+  @@map("exam_attempt_answers")
+}
+
+// ----------------------------------------------------
+// 5. Subscriptions & Ethiopian Manual Payments
+// ----------------------------------------------------
+
+model SubscriptionPlan {
+  id           String           @id @default(uuid())
+  name         String
+  tier         SubscriptionTier @unique
+  priceETB     Float            @default(0.0)
+  durationDays Int              @default(30)
+  features     Json
+  isActive     Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  subscriptions Subscription[]
+
+  @@map("subscription_plans")
+}
+
+model Subscription {
+  id        String             @id @default(uuid())
+  userId    String
+  planId    String
+  status    SubscriptionStatus @default(PENDING_VERIFICATION)
+  startedAt DateTime           @default(now())
+  expiresAt DateTime
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @updatedAt
+
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  plan            SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Restrict)
+  paymentReceipts PaymentReceipt[]
+
+  @@index([userId])
+  @@index([status])
+  @@map("subscriptions")
+}
+
+model PaymentReceipt {
+  id              String        @id @default(uuid())
+  userId          String
+  subscriptionId  String?
+  bankName        PaymentMethod @default(CBE)
+  transactionRef  String        @unique
+  amountETB       Float
+  receiptImageUrl String?
+  notes           String?
+  status          PaymentStatus @default(SUBMITTED)
+  verifiedById    String?
+  verifiedAt      DateTime?
+  adminNotes      String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  verifiedBy   User?         @relation("VerifiedPayments", fields: [verifiedById], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([status])
+  @@map("payment_receipts")
+}
+
+// ----------------------------------------------------
+// 6. Security Audit History
+// ----------------------------------------------------
+
+model AuditLog {
+  id            String   @id @default(uuid())
+  action        String
+  entity        String
+  entityId      String?
+  performedById String?
+  details       Json?
+  createdAt     DateTime @default(now())
+
+  performedBy User? @relation(fields: [performedById], references: [id], onDelete: SetNull)
+
+  @@index([entity, entityId])
+  @@index([performedById])
+  @@map("audit_logs")
+}

@@ -1,0 +1,8 @@
+node_modules
+dist
+.env
+.turbo
+.pnpm-store
+.pnpm-cache
+*.log
+.DS_Store

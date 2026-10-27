@@ -1,0 +1,37 @@
+{
+  "name": "exitprep-ethiopia",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ExitPrep Ethiopia — Mobile-first web platform for Ethiopian University Exit Exam and COC Competency Exam preparation",
+  "scripts": {
+    "dev": "turbo run dev",
+    "dev:api": "turbo run dev --filter=@exitprep/api",
+    "dev:web": "turbo run dev --filter=@exitprep/web",
+    "dev:admin": "turbo run dev --filter=@exitprep/admin",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "lint": "turbo run lint",
+    "db:generate": "pnpm --filter @exitprep/database exec prisma generate",
+    "db:validate": "pnpm --filter @exitprep/database exec prisma validate --schema prisma/schema.prisma",
+    "db:migrate": "pnpm --filter @exitprep/database exec prisma migrate dev --name init --schema prisma/schema.prisma",
+    "db:seed": "pnpm --filter @exitprep/database run db:seed",
+    "clean": "turbo run clean && rm -rf node_modules"
+  },
+  "devDependencies": {
+    "turbo": "^2.4.4",
+    "typescript": "^5.7.3"
+  },
+  "packageManager": "pnpm@10.0.0",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/client",
+      "@prisma/engines",
+      "esbuild",
+      "prisma",
+      "bcryptjs"
+    ]
+  }
+}
