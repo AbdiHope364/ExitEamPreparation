@@ -5,6 +5,7 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
+    "dev": "echo '@exitprep/database ready'",
     "db:generate": "prisma generate",
     "db:validate": "prisma validate --schema prisma/schema.prisma",
     "db:migrate": "prisma migrate dev --name init --schema prisma/schema.prisma",
