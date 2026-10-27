@@ -20,6 +20,14 @@ import {
   RefreshCw,
   Copy,
   Check,
+  Compass,
+  Landmark,
+  Briefcase,
+  TrendingUp,
+  Megaphone,
+  Zap,
+  Crown,
+  Receipt,
 } from 'lucide-react';
 
 const API_BASE = 'http://localhost:4000';
@@ -626,6 +634,11 @@ export default function App() {
             {/* Dual Pathways Grid */}
             <section className="max-w-7xl mx-auto px-3 sm:px-4 py-8 sm:py-12">
               <div className="text-center mb-8 sm:mb-10">
+                <div className="flex items-center justify-center mb-2.5">
+                  <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shadow-2xs">
+                    <Compass className="w-5 h-5" />
+                  </div>
+                </div>
                 <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">Dual Preparation Pathways</h2>
                 <p className="text-xs sm:text-sm md:text-base text-slate-600">
                   Shared exam engine catering to academic degrees and certified vocational qualifications.
@@ -636,19 +649,21 @@ export default function App() {
                 {/* Pathway 1: University Exit Exam */}
                 <div className="bg-white rounded-2xl p-5 sm:p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none"></div>
-                  <div className="relative">
-                    <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center mb-4">
+                  <div className="relative text-center">
+                    <div className="w-12 h-12 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto mb-4 shadow-2xs">
                       <BookOpen className="w-6 h-6" />
                     </div>
-                    <div className="inline-block px-2.5 py-0.5 rounded bg-emerald-50 text-emerald-700 text-xs font-bold mb-2">
-                      MoE University Mandate
+                    <div className="flex justify-center mb-2">
+                      <span className="inline-block px-2.5 py-0.5 rounded bg-emerald-50 text-emerald-700 text-xs font-bold">
+                        MoE University Mandate
+                      </span>
                     </div>
                     <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2.5">University Exit Exam</h3>
-                    <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-5">
+                    <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-5 max-w-md mx-auto">
                       Standardized assessments for graduating university students. Multiple business-related departments
                       available at launch: Accounting & Finance, Management, Economics, and Marketing Management.
                     </p>
-                    <ul className="space-y-2.5 text-xs text-slate-700 mb-6">
+                    <ul className="space-y-2.5 text-xs text-slate-700 mb-6 text-left max-w-sm mx-auto">
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                         <span>Curriculum aligned with Higher Education Ministry blueprints</span>
@@ -662,32 +677,36 @@ export default function App() {
                         <span>Topic-by-topic competency breakdown & diagnostics</span>
                       </li>
                     </ul>
-                    <button
-                      onClick={() => setActiveTab('catalog')}
-                      className="text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 flex items-center gap-1.5 p-1"
-                    >
-                      <span>View University Programs</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
+                    <div className="flex justify-center">
+                      <button
+                        onClick={() => setActiveTab('catalog')}
+                        className="text-xs sm:text-sm font-bold text-emerald-700 hover:text-emerald-800 flex items-center justify-center gap-1.5 p-1"
+                      >
+                        <span>View University Programs</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
 
                 {/* Pathway 2: COC Competency Exam */}
                 <div className="bg-white rounded-2xl p-5 sm:p-8 border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
                   <div className="absolute top-0 right-0 w-32 h-32 bg-amber-50 rounded-bl-full -mr-10 -mt-10 transition-transform group-hover:scale-110 pointer-events-none"></div>
-                  <div className="relative">
-                    <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center mb-4">
+                  <div className="relative text-center">
+                    <div className="w-12 h-12 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center mx-auto mb-4 shadow-2xs">
                       <Award className="w-6 h-6" />
                     </div>
-                    <div className="inline-block px-2.5 py-0.5 rounded bg-amber-50 text-amber-800 text-xs font-bold mb-2">
-                      Center of Competence (COC)
+                    <div className="flex justify-center mb-2">
+                      <span className="inline-block px-2.5 py-0.5 rounded bg-amber-50 text-amber-800 text-xs font-bold">
+                        Center of Competence (COC)
+                      </span>
                     </div>
                     <h3 className="text-lg sm:text-xl font-bold text-slate-900 mb-2.5">COC Competency Assessment</h3>
-                    <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-5">
+                    <p className="text-slate-600 text-xs sm:text-sm leading-relaxed mb-5 max-w-md mx-auto">
                       Vocational competency assessment for certified technical occupations. Configurable architecture designed
                       for Level IV & Level V standards, awaiting official qualification verification.
                     </p>
-                    <ul className="space-y-2.5 text-xs text-slate-700 mb-6">
+                    <ul className="space-y-2.5 text-xs text-slate-700 mb-6 text-left max-w-sm mx-auto">
                       <li className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-amber-600 shrink-0" />
                         <span>Occupational standards catalog configurable by qualification level</span>
@@ -701,13 +720,15 @@ export default function App() {
                         <span>Published strictly after qualified expert verification</span>
                       </li>
                     </ul>
-                    <button
-                      onClick={() => setActiveTab('catalog')}
-                      className="text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 flex items-center gap-1.5 p-1"
-                    >
-                      <span>Inspect COC Qualification Blueprint</span>
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
+                    <div className="flex justify-center">
+                      <button
+                        onClick={() => setActiveTab('catalog')}
+                        className="text-xs sm:text-sm font-bold text-amber-700 hover:text-amber-800 flex items-center justify-center gap-1.5 p-1"
+                      >
+                        <span>Inspect COC Qualification Blueprint</span>
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -717,13 +738,18 @@ export default function App() {
             <section className="bg-slate-100/70 py-8 sm:py-12 px-3 sm:px-4 border-t border-slate-200">
               <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-8">
+                  <div className="flex items-center justify-center mb-2.5">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shadow-2xs">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                  </div>
                   <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 mb-2">Built for the Ethiopian Student Experience</h2>
                   <p className="text-xs sm:text-sm text-slate-600">Engineered for mobile browsers, low data consumption, and local payment workflows.</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
-                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center mb-3">
+                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto mb-3 shadow-2xs">
                       <ShieldCheck className="w-5 h-5" />
                     </div>
                     <h4 className="font-bold text-slate-900 text-sm mb-1">Strict Content Rule</h4>
@@ -732,8 +758,8 @@ export default function App() {
                     </p>
                   </div>
 
-                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center mb-3">
+                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center mx-auto mb-3 shadow-2xs">
                       <Clock className="w-5 h-5" />
                     </div>
                     <h4 className="font-bold text-slate-900 text-sm mb-1">Server-Enforced Timing</h4>
@@ -742,8 +768,8 @@ export default function App() {
                     </p>
                   </div>
 
-                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="w-10 h-10 rounded-lg bg-purple-100 text-purple-800 flex items-center justify-center mb-3">
+                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <div className="w-10 h-10 rounded-lg bg-purple-100 text-purple-800 flex items-center justify-center mx-auto mb-3 shadow-2xs">
                       <CreditCard className="w-5 h-5" />
                     </div>
                     <h4 className="font-bold text-slate-900 text-sm mb-1">CBE & Telebirr Verification</h4>
@@ -752,8 +778,8 @@ export default function App() {
                     </p>
                   </div>
 
-                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="w-10 h-10 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center mb-3">
+                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <div className="w-10 h-10 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center mx-auto mb-3 shadow-2xs">
                       <Layers className="w-5 h-5" />
                     </div>
                     <h4 className="font-bold text-slate-900 text-sm mb-1">Department Specialization</h4>
@@ -770,7 +796,12 @@ export default function App() {
         {/* Tab: Catalog */}
         {activeTab === 'catalog' && (
           <div className="max-w-5xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
-            <div className="mb-6 sm:mb-8">
+            <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
+              <div className="flex items-center justify-center mb-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shadow-2xs">
+                  <Layers className="w-5 h-5" />
+                </div>
+              </div>
               <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 mb-2">Program Catalog & Blueprints</h1>
               <p className="text-xs sm:text-sm text-slate-600">
                 Explore supported university business curricula and occupational qualifications.
@@ -780,20 +811,24 @@ export default function App() {
             <div className="space-y-6">
               {/* Category 1 */}
               <div>
-                <div className="flex items-center gap-2 mb-3.5">
-                  <BookOpen className="w-5 h-5 text-emerald-700 shrink-0" />
+                <div className="flex items-center justify-center gap-2.5 mb-4 text-center">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center shrink-0 shadow-2xs">
+                    <BookOpen className="w-4 h-4" />
+                  </div>
                   <h2 className="text-base sm:text-lg font-bold text-slate-900">University Exit Examination (Business Programs)</h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
-                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-bold text-slate-900 text-sm sm:text-base">Accounting and Finance</h3>
-                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
-                        BSc / BA
-                      </span>
+                  {/* Accounting & Finance */}
+                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto mb-3 shadow-2xs">
+                      <Landmark className="w-5 h-5" />
                     </div>
-                    <p className="text-xs text-slate-600 mb-3.5 leading-relaxed">
+                    <div className="inline-block text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 mb-2">
+                      BSc / BA
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-sm sm:text-base mb-1.5">Accounting and Finance</h3>
+                    <p className="text-xs text-slate-600 mb-3.5 leading-relaxed text-center">
                       Core focus: Auditing & Assurance, Financial Accounting I-III, Cost & Managerial Accounting, Ethiopian Taxation Law, and Corporate Finance.
                     </p>
                     <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100">
@@ -807,14 +842,16 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-bold text-slate-900 text-sm sm:text-base">Management</h3>
-                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
-                        BA
-                      </span>
+                  {/* Management */}
+                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-800 flex items-center justify-center mx-auto mb-3 shadow-2xs">
+                      <Briefcase className="w-5 h-5" />
                     </div>
-                    <p className="text-xs text-slate-600 mb-3.5 leading-relaxed">
+                    <div className="inline-block text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-800 mb-2">
+                      BA
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-sm sm:text-base mb-1.5">Management</h3>
+                    <p className="text-xs text-slate-600 mb-3.5 leading-relaxed text-center">
                       Core focus: Strategic Management, Operations Management, Organizational Behavior, Project Management, and Business Research Methods.
                     </p>
                     <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100">
@@ -828,14 +865,16 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-bold text-slate-900 text-sm sm:text-base">Economics</h3>
-                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
-                        BSc / BA
-                      </span>
+                  {/* Economics */}
+                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <div className="w-10 h-10 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center mx-auto mb-3 shadow-2xs">
+                      <TrendingUp className="w-5 h-5" />
                     </div>
-                    <p className="text-xs text-slate-600 mb-3.5 leading-relaxed">
+                    <div className="inline-block text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 mb-2">
+                      BSc / BA
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-sm sm:text-base mb-1.5">Economics</h3>
+                    <p className="text-xs text-slate-600 mb-3.5 leading-relaxed text-center">
                       Core focus: Microeconomics, Macroeconomics, Introduction to Econometrics, Development Economics, and Ethiopian Economic Structure.
                     </p>
                     <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100">
@@ -849,14 +888,16 @@ export default function App() {
                     </div>
                   </div>
 
-                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-bold text-slate-900 text-sm sm:text-base">Marketing Management</h3>
-                      <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">
-                        BA
-                      </span>
+                  {/* Marketing Management */}
+                  <div className="bg-white p-4 sm:p-5 rounded-xl border border-slate-200 shadow-sm text-center">
+                    <div className="w-10 h-10 rounded-lg bg-purple-100 text-purple-800 flex items-center justify-center mx-auto mb-3 shadow-2xs">
+                      <Megaphone className="w-5 h-5" />
                     </div>
-                    <p className="text-xs text-slate-600 mb-3.5 leading-relaxed">
+                    <div className="inline-block text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded bg-purple-100 text-purple-800 mb-2">
+                      BA
+                    </div>
+                    <h3 className="font-bold text-slate-900 text-sm sm:text-base mb-1.5">Marketing Management</h3>
+                    <p className="text-xs text-slate-600 mb-3.5 leading-relaxed text-center">
                       Core focus: Consumer Behavior, Strategic Marketing, Sales Management, Marketing Communications, and International Marketing.
                     </p>
                     <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-slate-100">
@@ -874,25 +915,28 @@ export default function App() {
 
               {/* Category 2 */}
               <div className="pt-5 border-t border-slate-200">
-                <div className="flex items-center gap-2 mb-3.5">
-                  <Award className="w-5 h-5 text-amber-700 shrink-0" />
+                <div className="flex items-center justify-center gap-2.5 mb-4 text-center">
+                  <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center shrink-0 shadow-2xs">
+                    <Award className="w-4 h-4" />
+                  </div>
                   <h2 className="text-base sm:text-lg font-bold text-slate-900">COC Occupational Competency Catalog</h2>
                 </div>
 
-                <div className="bg-amber-50/60 rounded-xl p-4 sm:p-5 border border-amber-200/80">
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-bold text-slate-900 text-sm sm:text-base">Accounts & Budget Service</h3>
-                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-amber-200 text-amber-900 shrink-0">
-                          Level IV
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-700 mb-2 leading-relaxed max-w-2xl">
-                        Awaiting official occupational standards verification. Per product rule, competency units and mock assessments remain unpublished until verified with qualified assessors.
-                      </p>
-                    </div>
-                    <span className="self-start text-[11px] font-semibold text-amber-800 bg-amber-100 px-2 py-1 rounded shrink-0">
+                <div className="bg-amber-50/60 rounded-xl p-4 sm:p-5 border border-amber-200/80 text-center">
+                  <div className="w-10 h-10 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center mx-auto mb-3 shadow-2xs">
+                    <Award className="w-5 h-5" />
+                  </div>
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <h3 className="font-bold text-slate-900 text-sm sm:text-base">Accounts & Budget Service</h3>
+                    <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded bg-amber-200 text-amber-900 shrink-0">
+                      Level IV
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-700 mb-3 leading-relaxed max-w-2xl mx-auto">
+                    Awaiting official occupational standards verification. Per product rule, competency units and mock assessments remain unpublished until verified with qualified assessors.
+                  </p>
+                  <div className="flex justify-center">
+                    <span className="text-[11px] font-semibold text-amber-800 bg-amber-100 px-3 py-1 rounded-full border border-amber-200">
                       In Verification
                     </span>
                   </div>
@@ -905,18 +949,23 @@ export default function App() {
         {/* Tab: Practice Interface */}
         {activeTab === 'practice' && (
           <div className="max-w-3xl mx-auto px-3 sm:px-4 py-5 sm:py-8">
-            <div className="flex items-center justify-between mb-4 sm:mb-6">
-              <div>
-                <span className="text-[11px] sm:text-xs font-bold text-emerald-700 uppercase tracking-wider">Free Practice Engine</span>
-                <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">Sample Exit Exam Questions</h1>
+            <div className="text-center mb-5 sm:mb-6">
+              <div className="flex items-center justify-center mb-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shadow-2xs">
+                  <GraduationCap className="w-5 h-5" />
+                </div>
               </div>
-              <button
-                onClick={fetchQuestions}
-                className="p-2.5 text-slate-600 hover:text-emerald-700 rounded-lg hover:bg-slate-100 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-                title="Reload Questions"
-              >
-                <RefreshCw className={`w-4 h-4 ${loadingQuestions ? 'animate-spin' : ''}`} />
-              </button>
+              <span className="text-[11px] sm:text-xs font-bold text-emerald-700 uppercase tracking-wider block mb-1">Free Practice Engine</span>
+              <div className="flex items-center justify-center gap-2">
+                <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">Sample Exit Exam Questions</h1>
+                <button
+                  onClick={fetchQuestions}
+                  className="p-1.5 text-slate-500 hover:text-emerald-700 rounded-lg hover:bg-slate-100 transition-colors min-h-[36px] min-w-[36px] flex items-center justify-center"
+                  title="Reload Questions"
+                >
+                  <RefreshCw className={`w-4 h-4 ${loadingQuestions ? 'animate-spin' : ''}`} />
+                </button>
+              </div>
             </div>
 
             {/* Visual Progress Bar on Mobile */}
@@ -1084,7 +1133,12 @@ export default function App() {
         {activeTab === 'pricing' && (
           <div className="max-w-5xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
             <div className="text-center max-w-2xl mx-auto mb-8 sm:mb-10">
-              <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider">Affordable Access</span>
+              <div className="flex items-center justify-center mb-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shadow-2xs">
+                  <CreditCard className="w-5 h-5" />
+                </div>
+              </div>
+              <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider block mb-1">Affordable Access</span>
               <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 mb-2 sm:mb-3">
                 Free Practice + Paid Subscriptions
               </h1>
@@ -1099,10 +1153,15 @@ export default function App() {
               {/* Free Tier */}
               <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
                 <div>
-                  <h3 className="font-bold text-slate-900 text-base sm:text-lg mb-1">Free Practice Tier</h3>
-                  <p className="text-xs text-slate-500 mb-3 sm:mb-4">Essential preparation starter</p>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-4">
-                    ETB 0 <span className="text-xs font-normal text-slate-500">/ forever</span>
+                  <div className="w-11 h-11 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center mx-auto mb-3 shadow-2xs">
+                    <BookOpen className="w-5 h-5" />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-bold text-slate-900 text-base sm:text-lg mb-1">Free Practice Tier</h3>
+                    <p className="text-xs text-slate-500 mb-3 sm:mb-4">Essential preparation starter</p>
+                    <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-4">
+                      ETB 0 <span className="text-xs font-normal text-slate-500">/ forever</span>
+                    </div>
                   </div>
                   <ul className="space-y-2.5 text-xs text-slate-600 mb-6">
                     <li className="flex items-center gap-2">
@@ -1129,10 +1188,15 @@ export default function App() {
                   Most Popular
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900 text-base sm:text-lg mb-1">Standard Monthly</h3>
-                  <p className="text-xs text-slate-500 mb-3 sm:mb-4">Full question bank access</p>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-4">
-                    ETB 150 <span className="text-xs font-normal text-slate-500">/ 30 days</span>
+                  <div className="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto mb-3 shadow-2xs mt-1">
+                    <Zap className="w-5 h-5" />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-bold text-slate-900 text-base sm:text-lg mb-1">Standard Monthly</h3>
+                    <p className="text-xs text-slate-500 mb-3 sm:mb-4">Full question bank access</p>
+                    <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-4">
+                      ETB 150 <span className="text-xs font-normal text-slate-500">/ 30 days</span>
+                    </div>
                   </div>
                   <ul className="space-y-2.5 text-xs text-slate-600 mb-6">
                     <li className="flex items-center gap-2">
@@ -1160,10 +1224,15 @@ export default function App() {
               {/* Semester Pass */}
               <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm flex flex-col justify-between">
                 <div>
-                  <h3 className="font-bold text-slate-900 text-base sm:text-lg mb-1">Premium Semester</h3>
-                  <p className="text-xs text-slate-500 mb-3 sm:mb-4">Graduation exam pass guarantee</p>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-4">
-                    ETB 350 <span className="text-xs font-normal text-slate-500">/ 120 days</span>
+                  <div className="w-11 h-11 rounded-xl bg-teal-100 text-teal-800 flex items-center justify-center mx-auto mb-3 shadow-2xs">
+                    <Crown className="w-5 h-5" />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-bold text-slate-900 text-base sm:text-lg mb-1">Premium Semester</h3>
+                    <p className="text-xs text-slate-500 mb-3 sm:mb-4">Graduation exam pass guarantee</p>
+                    <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-4">
+                      ETB 350 <span className="text-xs font-normal text-slate-500">/ 120 days</span>
+                    </div>
                   </div>
                   <ul className="space-y-2.5 text-xs text-slate-600 mb-6">
                     <li className="flex items-center gap-2">
@@ -1191,11 +1260,16 @@ export default function App() {
 
             {/* Manual Payment Submission Form */}
             <div ref={paymentFormRef} className="bg-white rounded-2xl p-5 sm:p-8 border border-slate-200 shadow-sm max-w-2xl mx-auto scroll-mt-24">
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 mb-1">Submit Payment Slip (CBE / Telebirr)</h2>
-              <p className="text-xs text-slate-600 mb-5 leading-relaxed">
-                Transfer the subscription fee using either Commercial Bank of Ethiopia (CBE) or Telebirr, then input your
-                transaction reference code below for admin verification.
-              </p>
+              <div className="text-center mb-5">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center mx-auto mb-2.5 shadow-2xs">
+                  <Receipt className="w-5 h-5" />
+                </div>
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 mb-1">Submit Payment Slip (CBE / Telebirr)</h2>
+                <p className="text-xs text-slate-600 leading-relaxed max-w-lg mx-auto">
+                  Transfer the subscription fee using either Commercial Bank of Ethiopia (CBE) or Telebirr, then input your
+                  transaction reference code below for admin verification.
+                </p>
+              </div>
 
               {/* Bank Details Card with One-Tap Copy on Mobile */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 rounded-xl bg-slate-50 border border-slate-200 mb-5 text-xs text-slate-700">
@@ -1322,12 +1396,19 @@ export default function App() {
         {/* Tab: Profile */}
         {activeTab === 'profile' && (
           <div className="max-w-2xl mx-auto px-3 sm:px-4 py-6 sm:py-8">
-            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 mb-5 sm:mb-6">Student Account</h1>
+            <div className="text-center mb-5 sm:mb-6">
+              <div className="flex items-center justify-center mb-2.5">
+                <div className="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center shadow-2xs">
+                  <User className="w-5 h-5" />
+                </div>
+              </div>
+              <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900">Student Account</h1>
+            </div>
 
             {user ? (
               <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm space-y-5 sm:space-y-6">
-                <div className="flex items-center gap-3.5 sm:gap-4">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-lg sm:text-xl shrink-0">
+                <div className="flex flex-col sm:flex-row items-center text-center sm:text-left gap-3.5 sm:gap-4">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xl sm:text-2xl shrink-0 mx-auto sm:mx-0 shadow-2xs">
                     {user.fullName[0]}
                   </div>
                   <div className="truncate">

@@ -671,27 +671,39 @@ export default function App() {
                   </p>
                 </div>
 
-                {/* Metrics */}
+                {/* Metrics with centered icons */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-                  <div className="bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-800">
+                  <div className="bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-800 text-center">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-2 shadow-2xs">
+                      <Users className="w-4 h-4" />
+                    </div>
                     <span className="text-slate-400 text-[11px] sm:text-xs block mb-1">Enrolled Students</span>
                     <span className="text-xl sm:text-2xl font-extrabold text-white">{stats.totalStudents}</span>
                     <span className="text-[10px] text-emerald-400 block mt-1">+12 this week</span>
                   </div>
 
-                  <div className="bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-800">
+                  <div className="bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-800 text-center">
+                    <div className="w-8 h-8 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto mb-2 shadow-2xs">
+                      <CreditCard className="w-4 h-4" />
+                    </div>
                     <span className="text-slate-400 text-[11px] sm:text-xs block mb-1">Pending Slips</span>
                     <span className="text-xl sm:text-2xl font-extrabold text-amber-400">{pendingPaymentsCount}</span>
                     <span className="text-[10px] text-slate-400 block mt-1">CBE & Telebirr</span>
                   </div>
 
-                  <div className="bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-800">
+                  <div className="bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-800 text-center">
+                    <div className="w-8 h-8 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center mx-auto mb-2 shadow-2xs">
+                      <FileText className="w-4 h-4" />
+                    </div>
                     <span className="text-slate-400 text-[11px] sm:text-xs block mb-1">Under Review</span>
                     <span className="text-xl sm:text-2xl font-extrabold text-blue-400">{pendingQuestionsCount}</span>
                     <span className="text-[10px] text-slate-400 block mt-1">Awaiting sign-off</span>
                   </div>
 
-                  <div className="bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-800">
+                  <div className="bg-slate-900 p-3.5 sm:p-4 rounded-xl border border-slate-800 text-center">
+                    <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto mb-2 shadow-2xs">
+                      <Award className="w-4 h-4" />
+                    </div>
                     <span className="text-slate-400 text-[11px] sm:text-xs block mb-1">Subscriptions</span>
                     <span className="text-xl sm:text-2xl font-extrabold text-emerald-400">{stats.activeSubscriptions}</span>
                     <span className="text-[10px] text-slate-400 block mt-1">Paid standard/prem</span>
