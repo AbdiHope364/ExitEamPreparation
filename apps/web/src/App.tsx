@@ -13,7 +13,6 @@ import {
   LogOut,
   Sparkles,
   Layers,
-  ArrowRight,
   HelpCircle,
   Menu,
   X,
@@ -551,42 +550,58 @@ export default function App() {
       <main className="flex-1 pb-28 md:pb-12">
         {activeTab === 'home' && (
           <div>
-            {/* Hero Section */}
-            <section className="bg-gradient-to-b from-emerald-50/70 via-white to-slate-50 py-10 md:py-16 px-4 border-b border-slate-200">
-              <div className="max-w-4xl mx-auto text-center">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold uppercase tracking-wider mb-5">
-                  <Sparkles className="w-3.5 h-3.5 shrink-0" />
-                  <span>National University Exit & COC Platform</span>
+            {/* Hero Section (Compact & Attractive) */}
+            <section className="relative bg-gradient-to-b from-emerald-50/50 via-slate-50/30 to-white py-6 sm:py-8 md:py-10 px-3 sm:px-4 border-b border-slate-200/80 overflow-hidden">
+              {/* Subtle ambient lighting */}
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(16,185,129,0.14),rgba(255,255,255,0))] pointer-events-none"></div>
+
+              <div className="relative max-w-3xl mx-auto text-center">
+                {/* Pill Badge (No icon, compact padding) */}
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/80 text-[10px] sm:text-xs font-extrabold uppercase tracking-wider mb-2.5 sm:mb-3 shadow-2xs">
+                  National University Exit & COC Platform
                 </div>
-                <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight sm:leading-tight mb-4">
-                  Prepare for Ethiopia’s National{' '}
-                  <span className="text-emerald-700 underline decoration-amber-400 decoration-wavy underline-offset-4 sm:underline-offset-8">
-                    Exit & COC Exams
+
+                {/* Main Headline */}
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight leading-snug sm:leading-tight mb-2 sm:mb-3">
+                  Prepare for Ethiopia’s{' '}
+                  <span className="bg-gradient-to-r from-emerald-700 via-emerald-800 to-teal-800 bg-clip-text text-transparent">
+                    National Exit & COC Exams
                   </span>
                 </h1>
-                <p className="text-sm sm:text-base md:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto mb-6 sm:mb-8">
-                  Mobile-first assessment platform tailored for Ethiopian university graduates and TVET candidates.
-                  Practice verified questions, take server-timed mock exams, and review official benchmark explanations.
+
+                {/* Subtitle with compact padding */}
+                <p className="text-xs sm:text-sm md:text-base text-slate-600 leading-relaxed max-w-xl mx-auto mb-4 sm:mb-5">
+                  Mobile-first exam engine for Ethiopian university graduates and TVET candidates.
+                  Practice verified questions, take server-timed mock exams, and review official benchmark solutions.
                 </p>
 
-                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 max-w-md mx-auto sm:max-w-none">
+                {/* Action CTA Buttons (No icons, reduced padding, high touch compatibility) */}
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-2.5 max-w-md mx-auto sm:max-w-none">
                   <button
                     onClick={() => setActiveTab('practice')}
-                    className="w-full sm:w-auto px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-700/20 flex items-center justify-center gap-2 transition-transform active:scale-98 min-h-[48px]"
+                    className="w-full sm:w-auto px-6 py-2.5 sm:py-3 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white font-bold rounded-xl shadow-md shadow-emerald-700/20 transition-all active:scale-95 min-h-[44px] text-xs sm:text-sm"
                   >
-                    <span>Start Free Practice Now</span>
-                    <ArrowRight className="w-4 h-4 shrink-0" />
+                    Start Free Practice
                   </button>
                   <button
                     onClick={() => setActiveTab('catalog')}
-                    className="w-full sm:w-auto px-6 py-3.5 bg-white border border-slate-300 hover:bg-slate-100 text-slate-800 font-bold rounded-xl transition-colors min-h-[48px]"
+                    className="w-full sm:w-auto px-5 py-2.5 sm:py-3 bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 font-bold rounded-xl transition-colors min-h-[44px] text-xs sm:text-sm"
                   >
-                    Explore Departments & Blueprint
+                    Explore Departments & Blueprints
                   </button>
                 </div>
 
+                {/* Micro Trust Pills */}
+                <div className="mt-3.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-slate-500 font-medium">
+                  <span className="text-emerald-700 font-semibold">Business Faculty</span>
+                  <span>•</span>
+                  <span>Higher Education Blueprint Aligned</span>
+                  <span>•</span>
+                  <span>CBE & Telebirr</span>
+                </div>
+
                 {!user && (
-                  <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-slate-200/60 flex items-center justify-center gap-2 text-xs text-slate-500">
+                  <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-center gap-2 text-xs text-slate-500">
                     <span>Quick test mode:</span>
                     <button
                       onClick={loginDemoStudent}
