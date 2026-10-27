@@ -285,41 +285,54 @@ export default function App() {
   const currentQ = questions[currentQIndex] || questions[0];
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      {/* Top Notice: Content Integrity Decision */}
-      <div className="bg-emerald-950 text-emerald-200 text-xs px-3 sm:px-4 py-2 border-b border-emerald-800/50">
+    <div className="min-h-screen bg-slate-50 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
+      {/* Sleek Top Micro-Banner */}
+      <div className="bg-gradient-to-r from-emerald-950 via-slate-950 to-emerald-950 text-emerald-200 text-[11px] px-3 sm:px-4 py-1.5 border-b border-emerald-900/60 shadow-xs">
         <div className="max-w-7xl mx-auto w-full flex items-center justify-between gap-2">
-          <span className="flex items-center gap-1.5 font-medium truncate">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
-            <span className="truncate">ExitPrep Ethiopia — MoE & COC Standards Grounded</span>
-          </span>
-          <span className="hidden sm:inline text-emerald-300/80 shrink-0 text-[11px]">Port 5173</span>
+          <div className="flex items-center gap-1.5 truncate">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
+            <span className="truncate text-emerald-300 font-semibold">ExitPrep Ethiopia</span>
+            <span className="text-emerald-700 hidden xs:inline">•</span>
+            <span className="text-emerald-300/80 hidden xs:inline truncate">Official MoE & COC Standards Grounded</span>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-emerald-900/40 text-emerald-300 border border-emerald-700/40">
+              PORT 5173
+            </span>
+          </div>
         </div>
       </div>
 
-      {/* Main Navigation Bar */}
-      <header className="sticky top-0 z-40 bg-white/95 backdrop-blur border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2">
+      {/* Main Navigation Bar (Modern Mobile-First Glassmorphic Header) */}
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2">
           {/* Logo & Ethiopian Flag Pill */}
           <div
-            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer shrink-0"
+            className="flex items-center gap-2.5 sm:gap-3 cursor-pointer select-none shrink-0"
             onClick={() => {
               setActiveTab('home');
               setMobileMenuOpen(false);
             }}
           >
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-slate-900 flex items-center justify-center shadow-md shadow-emerald-700/20 text-white font-bold text-lg sm:text-xl shrink-0">
-              EP
+            <div className="relative">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-600 via-emerald-700 to-slate-900 flex items-center justify-center shadow-md shadow-emerald-700/20 text-white font-black text-sm sm:text-base ring-1 ring-emerald-500/20">
+                EP
+              </div>
+              <span className="absolute -bottom-0.5 -right-0.5 flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
             </div>
+
             <div>
               <div className="flex items-center gap-1.5">
-                <span className="font-extrabold text-slate-900 tracking-tight text-base sm:text-lg">ExitPrep</span>
-                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">
+                <span className="font-extrabold text-slate-900 tracking-tight text-sm sm:text-lg">ExitPrep</span>
+                <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200/80">
                   ET 🇪🇹
                 </span>
               </div>
-              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium hidden xs:block">
-                National Exam Engine
+              <p className="text-[10px] text-slate-500 font-medium hidden xs:block -mt-0.5">
+                National Exam Hub
               </p>
             </div>
           </div>
@@ -360,17 +373,19 @@ export default function App() {
             </button>
           </nav>
 
-          {/* User Auth Actions */}
+          {/* User Auth Actions & Mobile Hamburger */}
           <div className="flex items-center gap-1.5 sm:gap-2">
             {user ? (
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
                   onClick={() => setActiveTab('profile')}
-                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border border-slate-200 bg-slate-50 text-slate-700 text-xs sm:text-sm font-medium hover:bg-slate-100 transition-colors min-h-[40px]"
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-xs sm:text-sm font-medium hover:bg-slate-100 transition-colors min-h-[38px] active:scale-95"
                 >
-                  <User className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span className="max-w-[80px] sm:max-w-none truncate">{user.fullName.split(' ')[0]}</span>
-                  <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1 py-0.5 rounded font-bold hidden sm:inline">
+                  <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold">
+                    {user.fullName[0]}
+                  </div>
+                  <span className="max-w-[70px] sm:max-w-none truncate font-semibold">{user.fullName.split(' ')[0]}</span>
+                  <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1 py-0.2 rounded font-bold hidden sm:inline">
                     {user.role}
                   </span>
                 </button>
@@ -379,7 +394,7 @@ export default function App() {
                     setUser(null);
                     setToken(null);
                   }}
-                  className="p-2 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 min-h-[40px] min-w-[40px] flex items-center justify-center"
+                  className="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 min-h-[38px] min-w-[38px] flex items-center justify-center transition-colors"
                   title="Logout"
                 >
                   <LogOut className="w-4 h-4" />
@@ -392,7 +407,7 @@ export default function App() {
                     setAuthMode('login');
                     setShowAuthModal(true);
                   }}
-                  className="px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-semibold text-slate-700 hover:text-emerald-700 transition-colors min-h-[40px]"
+                  className="px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-bold text-slate-700 hover:text-emerald-700 hover:bg-slate-100 rounded-lg transition-colors min-h-[38px]"
                 >
                   Sign In
                 </button>
@@ -401,7 +416,7 @@ export default function App() {
                     setAuthMode('register');
                     setShowAuthModal(true);
                   }}
-                  className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm shadow-emerald-600/30 transition-all active:scale-95 min-h-[40px]"
+                  className="hidden xs:inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-xs shadow-emerald-600/30 transition-all active:scale-95 min-h-[38px]"
                 >
                   Join Free
                 </button>
@@ -412,85 +427,119 @@ export default function App() {
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle navigation menu"
-              className="md:hidden p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="md:hidden p-2 text-slate-700 hover:text-slate-900 rounded-xl hover:bg-slate-100 min-h-[40px] min-w-[40px] flex items-center justify-center transition-colors active:scale-95"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Dropdown Nav */}
+        {/* Mobile Dropdown Nav Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-1 shadow-lg animate-in slide-in-from-top-2 duration-150">
-            <button
-              onClick={() => {
-                setActiveTab('home');
-                setMobileMenuOpen(false);
-              }}
-              className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2.5 ${
-                activeTab === 'home' ? 'bg-emerald-50 text-emerald-800' : 'text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              <Sparkles className="w-4 h-4 text-emerald-600" />
-              <span>Overview</span>
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab('catalog');
-                setMobileMenuOpen(false);
-              }}
-              className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2.5 ${
-                activeTab === 'catalog' ? 'bg-emerald-50 text-emerald-800' : 'text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              <Layers className="w-4 h-4 text-emerald-600" />
-              <span>Exam Pathways & Blueprints</span>
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab('practice');
-                setMobileMenuOpen(false);
-              }}
-              className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2.5 ${
-                activeTab === 'practice' ? 'bg-emerald-50 text-emerald-800' : 'text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              <BookOpen className="w-4 h-4 text-emerald-600" />
-              <span>Free Practice Questions</span>
-            </button>
-            <button
-              onClick={() => {
-                setActiveTab('pricing');
-                setMobileMenuOpen(false);
-              }}
-              className={`w-full text-left px-3 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2.5 ${
-                activeTab === 'pricing' ? 'bg-emerald-50 text-emerald-800' : 'text-slate-700 hover:bg-slate-50'
-              }`}
-            >
-              <CreditCard className="w-4 h-4 text-emerald-600" />
-              <span>Subscriptions (CBE / Telebirr)</span>
-            </button>
+          <div className="md:hidden border-t border-slate-200/80 bg-white/98 backdrop-blur-md px-4 py-4 space-y-2 shadow-xl animate-in slide-in-from-top-2 duration-150">
+            <div className="space-y-1">
+              <button
+                onClick={() => {
+                  setActiveTab('home');
+                  setMobileMenuOpen(false);
+                }}
+                className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
+                  activeTab === 'home'
+                    ? 'bg-emerald-50 text-emerald-800 font-bold'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-700 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-4 h-4" />
+                </div>
+                <span>Overview</span>
+              </button>
 
-            <div className="pt-2 mt-2 border-t border-slate-100 flex flex-col gap-2">
+              <button
+                onClick={() => {
+                  setActiveTab('catalog');
+                  setMobileMenuOpen(false);
+                }}
+                className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
+                  activeTab === 'catalog'
+                    ? 'bg-emerald-50 text-emerald-800 font-bold'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-700 flex items-center justify-center shrink-0">
+                  <Layers className="w-4 h-4" />
+                </div>
+                <span>Exam Pathways & Blueprints</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveTab('practice');
+                  setMobileMenuOpen(false);
+                }}
+                className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
+                  activeTab === 'practice'
+                    ? 'bg-emerald-50 text-emerald-800 font-bold'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-700 flex items-center justify-center shrink-0">
+                  <BookOpen className="w-4 h-4" />
+                </div>
+                <span>Free Practice Questions</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  setActiveTab('pricing');
+                  setMobileMenuOpen(false);
+                }}
+                className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
+                  activeTab === 'pricing'
+                    ? 'bg-emerald-50 text-emerald-800 font-bold'
+                    : 'text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-700 flex items-center justify-center shrink-0">
+                  <CreditCard className="w-4 h-4" />
+                </div>
+                <span>Subscriptions (CBE / Telebirr)</span>
+              </button>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
               {!user ? (
-                <button
-                  onClick={() => {
-                    loginDemoStudent();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full py-2.5 text-center text-xs font-semibold text-emerald-700 bg-emerald-50 rounded-xl"
-                >
-                  ⚡ Login as Demo Student
-                </button>
+                <>
+                  <button
+                    onClick={() => {
+                      setAuthMode('register');
+                      setShowAuthModal(true);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full py-3 text-center text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-sm transition-all active:scale-98 min-h-[44px]"
+                  >
+                    Create Free Student Account
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      loginDemoStudent();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full py-2.5 text-center text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors min-h-[40px] flex items-center justify-center gap-1.5"
+                  >
+                    <span>⚡ Quick Test Login (Demo Student)</span>
+                  </button>
+                </>
               ) : (
                 <button
                   onClick={() => {
                     setActiveTab('profile');
                     setMobileMenuOpen(false);
                   }}
-                  className="w-full py-2.5 text-center text-xs font-semibold text-slate-700 bg-slate-100 rounded-xl"
+                  className="w-full py-2.5 text-center text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors min-h-[40px]"
                 >
-                  View Profile ({user.fullName})
+                  View My Profile ({user.fullName})
                 </button>
               )}
             </div>
