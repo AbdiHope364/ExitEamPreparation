@@ -9,6 +9,7 @@ import {
   ShieldCheck,
   ChevronRight,
   ChevronLeft,
+  ChevronDown,
   User,
   CreditCard,
   LogOut,
@@ -341,7 +342,7 @@ export default function App() {
   const currentQ = questions[currentQIndex] || questions[0];
 
   const renderAuthCard = (isModal: boolean) => (
-    <div className={`bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xl relative overflow-hidden w-full max-w-md ${isModal ? 'my-auto sm:my-0' : 'mx-auto'}`}>
+    <div className={`bg-white rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-2xl relative overflow-hidden w-full max-w-[calc(100vw-1.5rem)] sm:max-w-md box-border ${isModal ? 'my-auto sm:my-0' : 'mx-auto'}`}>
       {/* Top Emerald Gradient Accent */}
       <div className="h-1.5 w-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600"></div>
 
@@ -356,7 +357,7 @@ export default function App() {
       )}
 
       {/* Header with Centered Emblem */}
-      <div className="text-center pt-6 px-5 sm:px-7 pb-1">
+      <div className="text-center pt-6 px-4 sm:px-7 pb-1">
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-800 text-white flex items-center justify-center mx-auto mb-2.5 shadow-lg shadow-emerald-700/20 ring-4 ring-emerald-500/10">
           <GraduationCap className="w-6 h-6" />
         </div>
@@ -374,7 +375,7 @@ export default function App() {
       </div>
 
       {/* Segmented Top Toggle (Most Top Switcher) */}
-      <div className="px-5 sm:px-7 pt-3">
+      <div className="px-4 sm:px-7 pt-3">
         <div className="grid grid-cols-2 p-1 bg-slate-100 rounded-xl">
           <button
             type="button"
@@ -408,7 +409,7 @@ export default function App() {
       </div>
 
       {/* Instant Demo Login Button at Top */}
-      <div className="px-5 sm:px-7 pt-3">
+      <div className="px-4 sm:px-7 pt-3">
         <button
           type="button"
           onClick={loginDemoStudent}
@@ -420,7 +421,7 @@ export default function App() {
       </div>
 
       {/* Divider */}
-      <div className="px-5 sm:px-7 pt-3">
+      <div className="px-4 sm:px-7 pt-3">
         <div className="relative">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t border-slate-200"></div>
@@ -433,20 +434,20 @@ export default function App() {
 
       {/* Error Alert */}
       {authError && (
-        <div className="mx-5 sm:mx-7 mt-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
+        <div className="mx-4 sm:mx-7 mt-3 p-3 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-semibold flex items-center gap-2">
           <XCircle className="w-4 h-4 text-rose-600 shrink-0" />
           <span>{authError}</span>
         </div>
       )}
 
       {/* Form Fields with Blind Input Styling */}
-      <form onSubmit={handleAuthSubmit} className="p-5 sm:p-7 pt-3 space-y-3.5 text-xs">
+      <form onSubmit={handleAuthSubmit} className="p-4 sm:p-7 pt-3 space-y-3.5 text-xs w-full max-w-full min-w-0 box-border overflow-hidden">
         {authMode === 'register' && (
-          <div>
+          <div className="w-full min-w-0 max-w-full">
             <label className="block text-[11px] font-bold text-slate-700 mb-1">Full Name</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <User className="w-4 h-4" />
+            <div className="relative w-full min-w-0 max-w-full">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 z-10">
+                <User className="w-4 h-4 shrink-0" />
               </div>
               <input
                 type="text"
@@ -454,17 +455,17 @@ export default function App() {
                 placeholder="e.g. Kidus Yohannes"
                 value={authName}
                 onChange={(e) => setAuthName(e.target.value)}
-                className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50/80 focus:bg-white text-slate-900 placeholder:text-slate-400 text-base sm:text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 transition-all outline-hidden min-h-[44px]"
+                className="w-full min-w-0 max-w-full block pl-10 pr-3.5 py-2.5 bg-slate-50/80 focus:bg-white text-slate-900 placeholder:text-slate-400 text-base sm:text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 transition-all outline-hidden min-h-[44px] box-border"
               />
             </div>
           </div>
         )}
 
-        <div>
+        <div className="w-full min-w-0 max-w-full">
           <label className="block text-[11px] font-bold text-slate-700 mb-1">Email Address</label>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-              <Mail className="w-4 h-4" />
+          <div className="relative w-full min-w-0 max-w-full">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 z-10">
+              <Mail className="w-4 h-4 shrink-0" />
             </div>
             <input
               type="email"
@@ -472,44 +473,47 @@ export default function App() {
               placeholder="student@exitprep.et"
               value={authEmail}
               onChange={(e) => setAuthEmail(e.target.value)}
-              className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50/80 focus:bg-white text-slate-900 placeholder:text-slate-400 text-base sm:text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 transition-all outline-hidden min-h-[44px]"
+              className="w-full min-w-0 max-w-full block pl-10 pr-3.5 py-2.5 bg-slate-50/80 focus:bg-white text-slate-900 placeholder:text-slate-400 text-base sm:text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 transition-all outline-hidden min-h-[44px] box-border"
             />
           </div>
         </div>
 
         {authMode === 'register' && (
-          <div>
+          <div className="w-full min-w-0 max-w-full">
             <label className="block text-[11px] font-bold text-slate-700 mb-1">Degree Program / Blueprint</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <BookOpen className="w-4 h-4" />
+            <div className="relative w-full min-w-0 max-w-full">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 z-10">
+                <BookOpen className="w-4 h-4 shrink-0" />
               </div>
               <select
                 value={authProgram}
                 onChange={(e) => setAuthProgram(e.target.value)}
-                className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50/80 focus:bg-white text-slate-900 text-base sm:text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 transition-all outline-hidden min-h-[44px]"
+                className="w-full max-w-full min-w-0 block truncate appearance-none pl-10 pr-9 py-2.5 bg-slate-50/80 focus:bg-white text-slate-900 text-base sm:text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 transition-all outline-hidden min-h-[44px] cursor-pointer box-border"
               >
-                <option value="Accounting and Finance">Accounting and Finance (BSc)</option>
+                <option value="Accounting and Finance">Accounting & Finance (BSc)</option>
                 <option value="Management">Management (BA)</option>
                 <option value="Economics">Economics (BSc / BA)</option>
                 <option value="Marketing Management">Marketing Management (BA)</option>
-                <option value="Accounts & Budget Service Level IV">COC Accounts & Budget Service Level IV</option>
+                <option value="Accounts & Budget Service Level IV">COC: Accounts Level IV</option>
               </select>
+              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-400 z-10">
+                <ChevronDown className="w-4 h-4 shrink-0" />
+              </div>
             </div>
           </div>
         )}
 
         {/* Password (Blind Input with Eye Toggle) */}
-        <div>
+        <div className="w-full min-w-0 max-w-full">
           <div className="flex items-center justify-between mb-1">
             <label className="block text-[11px] font-bold text-slate-700">Password</label>
             <span className="text-[10px] text-slate-400 font-medium">
               {showPassword ? 'Visible' : 'Hidden (Blind)'}
             </span>
           </div>
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-              <Lock className="w-4 h-4" />
+          <div className="relative w-full min-w-0 max-w-full">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 z-10">
+              <Lock className="w-4 h-4 shrink-0" />
             </div>
             <input
               type={showPassword ? 'text' : 'password'}
@@ -517,13 +521,13 @@ export default function App() {
               placeholder="••••••••"
               value={authPassword}
               onChange={(e) => setAuthPassword(e.target.value)}
-              className="w-full pl-10 pr-11 py-2.5 bg-slate-50/80 focus:bg-white text-slate-900 placeholder:text-slate-400 text-base sm:text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 font-mono transition-all outline-hidden min-h-[44px]"
+              className="w-full min-w-0 max-w-full block pl-10 pr-11 py-2.5 bg-slate-50/80 focus:bg-white text-slate-900 placeholder:text-slate-400 text-base sm:text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 font-mono transition-all outline-hidden min-h-[44px] box-border"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
               aria-label={showPassword ? 'Hide password' : 'Show password'}
-              className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-700 transition-colors p-1"
+              className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-700 transition-colors p-1 z-10"
             >
               {showPassword ? <EyeOff className="w-4 h-4 text-emerald-600" /> : <Eye className="w-4 h-4 text-slate-500" />}
             </button>
@@ -532,16 +536,16 @@ export default function App() {
 
         {/* Confirm Password (Blind Input with Eye Toggle) */}
         {authMode === 'register' && (
-          <div>
+          <div className="w-full min-w-0 max-w-full">
             <div className="flex items-center justify-between mb-1">
               <label className="block text-[11px] font-bold text-slate-700">Confirm Password</label>
               <span className="text-[10px] text-slate-400 font-medium">
                 {showConfirmPassword ? 'Visible' : 'Hidden (Blind)'}
               </span>
             </div>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                <Lock className="w-4 h-4" />
+            <div className="relative w-full min-w-0 max-w-full">
+              <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400 z-10">
+                <Lock className="w-4 h-4 shrink-0" />
               </div>
               <input
                 type={showConfirmPassword ? 'text' : 'password'}
@@ -549,13 +553,13 @@ export default function App() {
                 placeholder="••••••••"
                 value={authConfirmPassword}
                 onChange={(e) => setAuthConfirmPassword(e.target.value)}
-                className="w-full pl-10 pr-11 py-2.5 bg-slate-50/80 focus:bg-white text-slate-900 placeholder:text-slate-400 text-base sm:text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 font-mono transition-all outline-hidden min-h-[44px]"
+                className="w-full min-w-0 max-w-full block pl-10 pr-11 py-2.5 bg-slate-50/80 focus:bg-white text-slate-900 placeholder:text-slate-400 text-base sm:text-xs rounded-xl border border-slate-200 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/20 font-mono transition-all outline-hidden min-h-[44px] box-border"
               />
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                 aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
-                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-700 transition-colors p-1"
+                className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-700 transition-colors p-1 z-10"
               >
                 {showConfirmPassword ? <EyeOff className="w-4 h-4 text-emerald-600" /> : <Eye className="w-4 h-4 text-slate-500" />}
               </button>
