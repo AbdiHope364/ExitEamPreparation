@@ -847,104 +847,114 @@ export default function App() {
 
               {/* Floating Top Dropdown Menu */}
               {roleDropdownOpen && (
-                <div
-                  role="listbox"
-                  aria-label="Staff Roles"
-                  className="absolute right-0 top-full mt-2 w-[calc(100vw-24px)] max-w-sm sm:w-96 bg-slate-900/98 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl p-2.5 z-50 ring-1 ring-black/70 animate-in fade-in slide-in-from-top-2 duration-150"
-                >
-                  {/* Header */}
-                  <div className="flex items-center justify-between px-2.5 py-2 mb-1.5 border-b border-slate-800">
-                    <div className="flex items-center gap-2">
-                      <div className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                        <Shield className="w-3.5 h-3.5" />
+                <>
+                  {/* Backdrop Overlay to prevent content bleed-through & visual overlap */}
+                  <div
+                    className="fixed inset-0 z-40 bg-slate-950/75 backdrop-blur-xs transition-opacity animate-in fade-in duration-150"
+                    onClick={() => setRoleDropdownOpen(false)}
+                    aria-hidden="true"
+                  />
+
+                  {/* Fully Opaque, High-Contrast Dropdown Card */}
+                  <div
+                    role="listbox"
+                    aria-label="Staff Roles"
+                    className="fixed inset-x-3 top-16 sm:inset-x-auto sm:absolute sm:right-0 sm:top-full sm:mt-2 w-auto sm:w-96 max-w-md bg-slate-900 border-2 border-slate-700 rounded-2xl shadow-2xl p-3 z-50 ring-1 ring-emerald-500/30 animate-in fade-in zoom-in-95 sm:slide-in-from-top-2 duration-150"
+                  >
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-2.5 py-2 mb-2 border-b border-slate-800">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                          <Shield className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <div className="text-xs sm:text-sm font-bold text-white">Switch Staff Role</div>
+                          <div className="text-[10px] text-slate-400">Select active permission level</div>
+                        </div>
                       </div>
-                      <div>
-                        <div className="text-xs font-bold text-white">Switch Staff Role</div>
-                        <div className="text-[10px] text-slate-400">Instant RBAC Role Simulation</div>
-                      </div>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/80">
+                        Active: {currentRoleConfig.shortLabel}
+                      </span>
                     </div>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/80">
-                      Active: {currentRoleConfig.shortLabel}
-                    </span>
-                  </div>
 
-                  {/* Role Items */}
-                  <div className="space-y-1.5 max-h-[65dvh] overflow-y-auto pr-0.5">
-                    {(Object.keys(DEMO_STAFF) as StaffRole[]).map((roleKey) => {
-                      const conf = ROLE_CONFIGS[roleKey];
-                      const staff = DEMO_STAFF[roleKey];
-                      const isSelected = currentRole === roleKey;
-                      const IconComponent = conf.icon;
+                    {/* Role Items */}
+                    <div className="space-y-2 max-h-[60dvh] overflow-y-auto pr-0.5">
+                      {(Object.keys(DEMO_STAFF) as StaffRole[]).map((roleKey) => {
+                        const conf = ROLE_CONFIGS[roleKey];
+                        const staff = DEMO_STAFF[roleKey];
+                        const isSelected = currentRole === roleKey;
+                        const IconComponent = conf.icon;
 
-                      return (
-                        <button
-                          key={roleKey}
-                          type="button"
-                          role="option"
-                          aria-selected={isSelected}
-                          onClick={() => {
-                            loginAsDemoStaff(roleKey);
-                            setRoleDropdownOpen(false);
-                          }}
-                          className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-start gap-2.5 cursor-pointer active:scale-[0.99] ${
-                            isSelected
-                              ? `${conf.bgColor} ${conf.borderColor} ring-1 ring-emerald-500/40 shadow-sm`
-                              : 'bg-slate-950/60 border-slate-800/80 hover:bg-slate-800/60 hover:border-slate-700 text-slate-300'
-                          }`}
-                        >
-                          <div
-                            className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${conf.bgColor} border ${conf.borderColor}`}
+                        return (
+                          <button
+                            key={roleKey}
+                            type="button"
+                            role="option"
+                            aria-selected={isSelected}
+                            onClick={() => {
+                              loginAsDemoStaff(roleKey);
+                              setRoleDropdownOpen(false);
+                            }}
+                            className={`w-full text-left p-3 rounded-xl border transition-all flex items-start gap-3 cursor-pointer active:scale-[0.99] min-h-[52px] ${
+                              isSelected
+                                ? 'bg-slate-950 border-emerald-500/60 ring-2 ring-emerald-500/30 shadow-md'
+                                : 'bg-slate-950/95 border-slate-800 hover:bg-slate-800 hover:border-slate-700 text-slate-200'
+                            }`}
                           >
-                            <IconComponent className={`w-3.5 h-3.5 ${conf.textColor}`} />
-                          </div>
-
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between gap-1 mb-0.5">
-                              <span
-                                className={`font-bold text-xs truncate ${
-                                  isSelected ? 'text-white' : 'text-slate-200'
-                                }`}
-                              >
-                                {conf.label}
-                              </span>
-                              <span
-                                className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded border ${conf.borderColor} ${conf.textColor} shrink-0`}
-                              >
-                                {conf.badge}
-                              </span>
+                            <div
+                              className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${conf.bgColor} border ${conf.borderColor}`}
+                            >
+                              <IconComponent className={`w-4 h-4 ${conf.textColor}`} />
                             </div>
 
-                            <div className="text-[10px] text-slate-400 font-medium truncate mb-0.5">
-                              {staff.fullName} • <span className="font-mono text-slate-500">{staff.email}</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-1 mb-0.5">
+                                <span
+                                  className={`font-bold text-xs sm:text-sm truncate ${
+                                    isSelected ? 'text-white' : 'text-slate-200'
+                                  }`}
+                                >
+                                  {conf.label}
+                                </span>
+                                <span
+                                  className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded border ${conf.borderColor} ${conf.textColor} shrink-0`}
+                                >
+                                  {conf.badge}
+                                </span>
+                              </div>
+
+                              <div className="text-[11px] text-slate-300 font-medium truncate mb-1">
+                                {staff.fullName} • <span className="font-mono text-slate-400">{staff.email}</span>
+                              </div>
+
+                              <p className="text-[11px] text-slate-400 leading-snug">
+                                {conf.desc}
+                              </p>
                             </div>
 
-                            <p className="text-[10px] text-slate-500 leading-snug line-clamp-1">
-                              {conf.desc}
-                            </p>
-                          </div>
+                            {isSelected && (
+                              <div className="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center shrink-0 mt-1 shadow-xs">
+                                <Check className="w-3.5 h-3.5 stroke-[3]" />
+                              </div>
+                            )}
+                          </button>
+                        );
+                      })}
+                    </div>
 
-                          {isSelected && (
-                            <div className="w-4 h-4 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center shrink-0 mt-1 shadow-xs">
-                              <Check className="w-3 h-3 stroke-[3]" />
-                            </div>
-                          )}
-                        </button>
-                      );
-                    })}
+                    {/* Dropdown Footer */}
+                    <div className="mt-2.5 pt-2 border-t border-slate-800 px-2 flex items-center justify-between text-[11px] text-slate-400">
+                      <span>RBAC Security Enforced</span>
+                      <button
+                        type="button"
+                        onClick={() => setRoleDropdownOpen(false)}
+                        className="text-emerald-400 hover:text-emerald-300 font-bold cursor-pointer p-1"
+                      >
+                        Done
+                      </button>
+                    </div>
                   </div>
-
-                  {/* Dropdown Footer */}
-                  <div className="mt-2 pt-2 border-t border-slate-800/80 px-2 flex items-center justify-between text-[10px] text-slate-500">
-                    <span>RBAC Security Enforced</span>
-                    <button
-                      type="button"
-                      onClick={() => setRoleDropdownOpen(false)}
-                      className="text-slate-400 hover:text-white font-medium cursor-pointer"
-                    >
-                      Close
-                    </button>
-                  </div>
-                </div>
+                </>
               )}
             </div>
 
