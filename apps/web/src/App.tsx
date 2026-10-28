@@ -930,27 +930,18 @@ export default function App() {
           {/* User Auth Actions & Mobile Hamburger */}
           <div className="flex items-center gap-1.5 sm:gap-2">
             {user ? (
-              <div className="flex items-center gap-1.5 sm:gap-2">
-                <button
-                  onClick={() => setActiveTab('profile')}
-                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-xs sm:text-sm font-medium hover:bg-slate-100 transition-colors min-h-[38px] active:scale-95 shrink-0"
-                >
-                  <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold">
-                    {user.fullName[0]}
-                  </div>
-                  <span className="max-w-[70px] sm:max-w-none truncate font-semibold">{user.fullName.split(' ')[0]}</span>
-                  <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1 py-0.2 rounded font-bold hidden sm:inline">
-                    {user.role}
-                  </span>
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 min-h-[38px] min-w-[38px] flex items-center justify-center transition-colors shrink-0"
-                  title="Logout"
-                >
-                  <LogOut className="w-4 h-4" />
-                </button>
-              </div>
+              <button
+                onClick={() => setActiveTab('profile')}
+                className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-xs sm:text-sm font-medium hover:bg-slate-100 transition-colors min-h-[38px] active:scale-95 shrink-0"
+              >
+                <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold">
+                  {user.fullName[0]}
+                </div>
+                <span className="max-w-[70px] sm:max-w-none truncate font-semibold">{user.fullName.split(' ')[0]}</span>
+                <span className="text-[10px] bg-emerald-100 text-emerald-800 px-1 py-0.2 rounded font-bold hidden sm:inline">
+                  {user.role}
+                </span>
+              </button>
             ) : (
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <button

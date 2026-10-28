@@ -958,16 +958,6 @@ export default function App() {
               )}
             </div>
 
-            {/* Sign Out Button */}
-            <button
-              onClick={handleAdminLogout}
-              aria-label="Sign out of operations console"
-              title="Sign out of operations console"
-              className="hidden sm:flex p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-slate-800 hover:border-rose-500/30 rounded-xl transition-all cursor-pointer min-h-[38px] min-w-[38px] items-center justify-center active:scale-95 shrink-0"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-
             {/* Sidebar Button List (Most Right) */}
             <button
               onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
