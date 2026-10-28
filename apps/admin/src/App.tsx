@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   ShieldAlert,
   CreditCard,
@@ -184,9 +184,10 @@ export default function App() {
   const [authChecking, setAuthChecking] = useState(true);
   const [currentRole, setCurrentRole] = useState<StaffRole>('SUPER_ADMINISTRATOR');
   const [activeSection, setActiveSection] = useState<'overview' | 'payments' | 'questions' | 'catalog' | 'users' | 'audit'>('overview');
-  const [roleModalOpen, setRoleModalOpen] = useState(false);
+  const [roleDropdownOpen, setRoleDropdownOpen] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [isApiOnline, setIsApiOnline] = useState<boolean | null>(null);
+  const roleDropdownRef = useRef<HTMLDivElement>(null);
 
   // Admin login form state
   const [loginEmail, setLoginEmail] = useState('');
@@ -270,6 +271,28 @@ export default function App() {
   useEffect(() => {
     checkAuth();
   }, []);
+
+  // Close top role dropdown when clicking outside or pressing Escape
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (roleDropdownRef.current && !roleDropdownRef.current.contains(e.target as Node)) {
+        setRoleDropdownOpen(false);
+      }
+    };
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setRoleDropdownOpen(false);
+      }
+    };
+    if (roleDropdownOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [roleDropdownOpen]);
 
   const checkAuth = async () => {
     setAuthChecking(true);
@@ -732,6 +755,18 @@ export default function App() {
             <span className="text-slate-500 hidden sm:inline">Restricted to authorized personnel</span>
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            {/* Top-Most Dropdown Trigger: Switch Staff Role */}
+            <button
+              type="button"
+              onClick={() => setRoleDropdownOpen((prev) => !prev)}
+              aria-label="Switch staff role top dropdown"
+              className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 text-[10px] text-slate-300 hover:text-white transition-colors cursor-pointer"
+            >
+              <span className="text-slate-400">Role:</span>
+              <span className={`font-bold ${currentRoleConfig.textColor}`}>{currentRoleConfig.shortLabel}</span>
+              <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform duration-200 ${roleDropdownOpen ? 'rotate-180 text-white' : ''}`} />
+            </button>
+
             {isApiOnline === false ? (
               <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/90 text-amber-300 border border-amber-800/70 flex items-center gap-1">
                 <WifiOff className="w-3 h-3 text-amber-400" />
@@ -786,28 +821,144 @@ export default function App() {
             </div>
           </div>
 
-          {/* Right: Role Pill, Hamburger Drawer Toggle & Sign Out */}
+          {/* Right: Top Dropdown Role Switcher, Hamburger Drawer Toggle & Sign Out */}
           <div className="flex items-center gap-1.5 sm:gap-2">
-            {/* Role Switcher Pill Button */}
-            <button
-              onClick={() => setRoleModalOpen(true)}
-              aria-label="Change staff role"
-              className={`flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-xl border transition-all duration-150 active:scale-95 text-xs font-semibold min-h-[38px] ${currentRoleConfig.bgColor} ${currentRoleConfig.borderColor}`}
-            >
-              <div className="flex items-center gap-1.5">
-                <span className={`w-2 h-2 rounded-full ${currentRoleConfig.dotColor} animate-pulse shrink-0`}></span>
-                <CurrentRoleIcon className={`w-3.5 h-3.5 ${currentRoleConfig.textColor} shrink-0`} />
-                <span className={`font-bold ${currentRoleConfig.textColor} text-xs truncate max-w-[85px] sm:max-w-none`}>
-                  {currentRoleConfig.shortLabel}
+            {/* Top Dropdown: Switch Staff Role */}
+            <div className="relative" ref={roleDropdownRef}>
+              <button
+                type="button"
+                onClick={() => setRoleDropdownOpen((prev) => !prev)}
+                aria-expanded={roleDropdownOpen}
+                aria-haspopup="listbox"
+                aria-label="Switch staff role dropdown"
+                className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-xl border transition-all duration-150 active:scale-95 text-xs font-semibold min-h-[38px] cursor-pointer shadow-sm ${
+                  roleDropdownOpen
+                    ? 'ring-2 ring-emerald-500/40 bg-slate-800 border-emerald-500/50'
+                    : `${currentRoleConfig.bgColor} ${currentRoleConfig.borderColor}`
+                }`}
+              >
+                <div className="flex items-center gap-1.5">
+                  <span className={`w-2 h-2 rounded-full ${currentRoleConfig.dotColor} animate-pulse shrink-0`}></span>
+                  <CurrentRoleIcon className={`w-3.5 h-3.5 ${currentRoleConfig.textColor} shrink-0`} />
+                  <span className="text-[11px] text-slate-400 font-normal hidden sm:inline">Role:</span>
+                  <span className={`font-bold ${currentRoleConfig.textColor} text-xs truncate max-w-[85px] sm:max-w-none`}>
+                    {currentRoleConfig.shortLabel}
+                  </span>
+                </div>
+
+                <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-900/80 text-slate-300 font-mono hidden md:inline">
+                  {(currentUser?.fullName || DEMO_STAFF[currentRole].fullName).split(' ')[0]}
                 </span>
-              </div>
 
-              <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-900/80 text-slate-300 font-mono hidden md:inline">
-                {(currentUser?.fullName || DEMO_STAFF[currentRole].fullName).split(' ')[0]}
-              </span>
+                <ChevronDown
+                  className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform duration-200 ${
+                    roleDropdownOpen ? 'rotate-180 text-white' : ''
+                  }`}
+                />
+              </button>
 
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 shrink-0 ml-0.5" />
-            </button>
+              {/* Floating Top Dropdown Menu */}
+              {roleDropdownOpen && (
+                <div
+                  role="listbox"
+                  aria-label="Staff Roles"
+                  className="absolute right-0 top-full mt-2 w-[calc(100vw-24px)] max-w-sm sm:w-96 bg-slate-900/98 backdrop-blur-xl border border-slate-700/90 rounded-2xl shadow-2xl p-2.5 z-50 ring-1 ring-black/70 animate-in fade-in slide-in-from-top-2 duration-150"
+                >
+                  {/* Header */}
+                  <div className="flex items-center justify-between px-2.5 py-2 mb-1.5 border-b border-slate-800">
+                    <div className="flex items-center gap-2">
+                      <div className="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                        <Shield className="w-3.5 h-3.5" />
+                      </div>
+                      <div>
+                        <div className="text-xs font-bold text-white">Switch Staff Role</div>
+                        <div className="text-[10px] text-slate-400">Instant RBAC Role Simulation</div>
+                      </div>
+                    </div>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800/80">
+                      Active: {currentRoleConfig.shortLabel}
+                    </span>
+                  </div>
+
+                  {/* Role Items */}
+                  <div className="space-y-1.5 max-h-[65dvh] overflow-y-auto pr-0.5">
+                    {(Object.keys(DEMO_STAFF) as StaffRole[]).map((roleKey) => {
+                      const conf = ROLE_CONFIGS[roleKey];
+                      const staff = DEMO_STAFF[roleKey];
+                      const isSelected = currentRole === roleKey;
+                      const IconComponent = conf.icon;
+
+                      return (
+                        <button
+                          key={roleKey}
+                          type="button"
+                          role="option"
+                          aria-selected={isSelected}
+                          onClick={() => {
+                            loginAsDemoStaff(roleKey);
+                            setRoleDropdownOpen(false);
+                          }}
+                          className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-start gap-2.5 cursor-pointer active:scale-[0.99] ${
+                            isSelected
+                              ? `${conf.bgColor} ${conf.borderColor} ring-1 ring-emerald-500/40 shadow-sm`
+                              : 'bg-slate-950/60 border-slate-800/80 hover:bg-slate-800/60 hover:border-slate-700 text-slate-300'
+                          }`}
+                        >
+                          <div
+                            className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${conf.bgColor} border ${conf.borderColor}`}
+                          >
+                            <IconComponent className={`w-3.5 h-3.5 ${conf.textColor}`} />
+                          </div>
+
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-1 mb-0.5">
+                              <span
+                                className={`font-bold text-xs truncate ${
+                                  isSelected ? 'text-white' : 'text-slate-200'
+                                }`}
+                              >
+                                {conf.label}
+                              </span>
+                              <span
+                                className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded border ${conf.borderColor} ${conf.textColor} shrink-0`}
+                              >
+                                {conf.badge}
+                              </span>
+                            </div>
+
+                            <div className="text-[10px] text-slate-400 font-medium truncate mb-0.5">
+                              {staff.fullName} • <span className="font-mono text-slate-500">{staff.email}</span>
+                            </div>
+
+                            <p className="text-[10px] text-slate-500 leading-snug line-clamp-1">
+                              {conf.desc}
+                            </p>
+                          </div>
+
+                          {isSelected && (
+                            <div className="w-4 h-4 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center shrink-0 mt-1 shadow-xs">
+                              <Check className="w-3 h-3 stroke-[3]" />
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Dropdown Footer */}
+                  <div className="mt-2 pt-2 border-t border-slate-800/80 px-2 flex items-center justify-between text-[10px] text-slate-500">
+                    <span>RBAC Security Enforced</span>
+                    <button
+                      type="button"
+                      onClick={() => setRoleDropdownOpen(false)}
+                      className="text-slate-400 hover:text-white font-medium cursor-pointer"
+                    >
+                      Close
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Mobile Navigation Drawer Toggle */}
             <button
@@ -833,98 +984,6 @@ export default function App() {
           </div>
         </div>
       </header>
-
-      {/* Role Switcher Mobile Sheet / Modal */}
-      {roleModalOpen && (
-        <div
-          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-150"
-          onClick={() => setRoleModalOpen(false)}
-        >
-          <div
-            className="bg-slate-900 rounded-t-3xl sm:rounded-2xl p-4 sm:p-6 w-full max-w-md border border-slate-800 shadow-2xl relative max-h-[85dvh] overflow-y-auto pb-[max(1.25rem,env(safe-area-inset-bottom))]"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
-              <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                  <Shield className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className="font-bold text-white text-sm sm:text-base">Switch Staff Role</h3>
-                  <p className="text-[11px] text-slate-400">Simulate role-based access & permissions</p>
-                </div>
-              </div>
-              <button
-                onClick={() => setRoleModalOpen(false)}
-                aria-label="Close role modal"
-                className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Roles List Cards */}
-            <div className="space-y-2">
-              {(Object.keys(DEMO_STAFF) as StaffRole[]).map((roleKey) => {
-                const conf = ROLE_CONFIGS[roleKey];
-                const staff = DEMO_STAFF[roleKey];
-                const isSelected = currentRole === roleKey;
-                const IconComponent = conf.icon;
-
-                return (
-                  <button
-                    key={roleKey}
-                    onClick={() => {
-                      loginAsDemoStaff(roleKey);
-                      setRoleModalOpen(false);
-                    }}
-                    className={`w-full text-left p-3 rounded-xl border transition-all flex items-start gap-3 active:scale-[0.99] min-h-[44px] cursor-pointer ${
-                      isSelected
-                        ? `${conf.bgColor} ${conf.borderColor} ring-1 ring-emerald-500/30`
-                        : 'bg-slate-950/60 border-slate-800/80 hover:bg-slate-800/50 hover:border-slate-700'
-                    }`}
-                  >
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${conf.bgColor} border ${conf.borderColor}`}>
-                      <IconComponent className={`w-4 h-4 ${conf.textColor}`} />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-1 mb-0.5">
-                        <span className={`font-bold text-xs sm:text-sm truncate ${isSelected ? 'text-white' : 'text-slate-200'}`}>
-                          {conf.label}
-                        </span>
-                        <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded border ${conf.borderColor} ${conf.textColor}`}>
-                          {conf.badge}
-                        </span>
-                      </div>
-
-                      <div className="text-[11px] text-slate-400 font-medium truncate mb-1">
-                        {staff.fullName} • <span className="font-mono text-slate-500">{staff.email}</span>
-                      </div>
-
-                      <p className="text-[11px] text-slate-500 leading-snug line-clamp-2">
-                        {conf.desc}
-                      </p>
-                    </div>
-
-                    {isSelected && (
-                      <div className="w-5 h-5 rounded-full bg-emerald-500 text-slate-950 flex items-center justify-center shrink-0 mt-1 shadow-xs">
-                        <Check className="w-3.5 h-3.5 stroke-[3]" />
-                      </div>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500">
-              <span>Security: RBAC Enforced</span>
-              <span className="text-emerald-400 font-semibold">Active: {currentRoleConfig.shortLabel}</span>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Mobile Slide-Over Drawer Menu */}
       {mobileDrawerOpen && (
@@ -960,7 +1019,7 @@ export default function App() {
                   <button
                     onClick={() => {
                       setMobileDrawerOpen(false);
-                      setRoleModalOpen(true);
+                      setRoleDropdownOpen(true);
                     }}
                     className="text-emerald-400 font-bold hover:underline"
                   >
