@@ -748,25 +748,13 @@ export default function App() {
       {/* Sleek Ultra-Compact Security Header Line */}
       <div className="bg-gradient-to-r from-slate-950 via-slate-900 to-slate-950 border-b border-slate-800/80 px-3 sm:px-4 py-1 text-[11px] text-slate-400">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
-          <div className="flex items-center gap-1.5 truncate">
+          <div className="flex items-center gap-1.5 min-w-0">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
             <span className="truncate text-slate-300 font-medium">ExitPrep Operations Console</span>
             <span className="text-slate-600 hidden sm:inline">•</span>
             <span className="text-slate-500 hidden sm:inline">Restricted to authorized personnel</span>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            {/* Top-Most Dropdown Trigger: Switch Staff Role */}
-            <button
-              type="button"
-              onClick={() => setRoleDropdownOpen((prev) => !prev)}
-              aria-label="Switch staff role top dropdown"
-              className="flex items-center gap-1 px-2 py-0.5 rounded-lg bg-slate-800/90 hover:bg-slate-800 border border-slate-700/80 text-[10px] text-slate-300 hover:text-white transition-colors cursor-pointer"
-            >
-              <span className="text-slate-400">Role:</span>
-              <span className={`font-bold ${currentRoleConfig.textColor}`}>{currentRoleConfig.shortLabel}</span>
-              <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform duration-200 ${roleDropdownOpen ? 'rotate-180 text-white' : ''}`} />
-            </button>
-
+          <div className="flex items-center gap-1.5 shrink-0">
             {isApiOnline === false ? (
               <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/90 text-amber-300 border border-amber-800/70 flex items-center gap-1">
                 <WifiOff className="w-3 h-3 text-amber-400" />
@@ -778,7 +766,7 @@ export default function App() {
                 <span>API :4000</span>
               </span>
             )}
-            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800/80 text-amber-300/90 border border-slate-700/60 hidden xs:inline">
+            <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-slate-800/80 text-amber-300/90 border border-slate-700/60 hidden sm:inline">
               PORT 5174
             </span>
           </div>
@@ -786,18 +774,18 @@ export default function App() {
       </div>
 
       {/* Main Responsive Header */}
-      <header className="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 shadow-lg shadow-black/20">
+      <header className="sticky top-0 z-30 bg-slate-900/95 backdrop-blur-md border-b border-slate-800 shadow-lg shadow-black/20 overflow-visible">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2">
           {/* Left: Brand Identity */}
           <div
-            className="flex items-center gap-2 sm:gap-3 cursor-pointer select-none shrink-0"
+            className="flex items-center gap-2 sm:gap-2.5 cursor-pointer select-none min-w-0 shrink-0"
             onClick={() => {
               setActiveSection('overview');
               setMobileDrawerOpen(false);
             }}
           >
             {/* Logo Badge */}
-            <div className="relative">
+            <div className="relative shrink-0">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-800 flex items-center justify-center font-black text-white text-sm sm:text-base shadow-md shadow-emerald-950/60 ring-1 ring-emerald-400/30">
                 EP
               </div>
@@ -808,10 +796,10 @@ export default function App() {
             </div>
 
             {/* Title & Ethiopian Flag */}
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-1 sm:gap-1.5">
                 <span className="font-extrabold text-white text-sm sm:text-base tracking-tight">ExitPrep</span>
-                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/80">
+                <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-wider px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-400 border border-emerald-800/80 shrink-0">
                   ADMIN 🇪🇹
                 </span>
               </div>
@@ -822,9 +810,9 @@ export default function App() {
           </div>
 
           {/* Right: Top Dropdown Role Switcher, Hamburger Drawer Toggle & Sign Out */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Top Dropdown: Switch Staff Role */}
-            <div className="relative" ref={roleDropdownRef}>
+            <div className="relative shrink-0" ref={roleDropdownRef}>
               <button
                 type="button"
                 onClick={() => setRoleDropdownOpen((prev) => !prev)}
