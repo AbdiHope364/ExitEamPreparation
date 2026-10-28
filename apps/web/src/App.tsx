@@ -933,7 +933,7 @@ export default function App() {
               <div className="flex items-center gap-1.5 sm:gap-2">
                 <button
                   onClick={() => setActiveTab('profile')}
-                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-xs sm:text-sm font-medium hover:bg-slate-100 transition-colors min-h-[38px] active:scale-95"
+                  className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl border border-slate-200 bg-slate-50 text-slate-700 text-xs sm:text-sm font-medium hover:bg-slate-100 transition-colors min-h-[38px] active:scale-95 shrink-0"
                 >
                   <div className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-bold">
                     {user.fullName[0]}
@@ -945,7 +945,7 @@ export default function App() {
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 min-h-[38px] min-w-[38px] flex items-center justify-center transition-colors"
+                  className="p-2 text-slate-400 hover:text-rose-600 rounded-xl hover:bg-rose-50 min-h-[38px] min-w-[38px] flex items-center justify-center transition-colors shrink-0"
                   title="Logout"
                 >
                   <LogOut className="w-4 h-4" />
@@ -958,7 +958,7 @@ export default function App() {
                     setAuthMode('login');
                     setShowAuthModal(true);
                   }}
-                  className="px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-bold text-slate-700 hover:text-emerald-700 hover:bg-slate-100 rounded-lg transition-colors min-h-[38px]"
+                  className="px-2.5 sm:px-3 py-1.5 text-xs sm:text-sm font-bold text-slate-700 hover:text-emerald-700 hover:bg-slate-100 rounded-lg transition-colors min-h-[38px] shrink-0"
                 >
                   Sign In
                 </button>
@@ -967,98 +967,215 @@ export default function App() {
                     setAuthMode('register');
                     setShowAuthModal(true);
                   }}
-                  className="hidden xs:inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-xs shadow-emerald-600/30 transition-all active:scale-95 min-h-[38px]"
+                  className="hidden xs:inline-flex items-center px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-xs shadow-emerald-600/30 transition-all active:scale-95 min-h-[38px] shrink-0"
                 >
                   Join Free
                 </button>
               </div>
             )}
 
-            {/* Mobile menu toggle */}
+            {/* Sidebar Button List (Most Right) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle navigation menu"
-              className="md:hidden p-2 text-slate-700 hover:text-slate-900 rounded-xl hover:bg-slate-100 min-h-[40px] min-w-[40px] flex items-center justify-center transition-colors active:scale-95"
+              aria-label="Open navigation sidebar menu"
+              title="Open navigation menu"
+              className="p-2 text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition-all cursor-pointer min-h-[38px] min-w-[38px] flex items-center justify-center relative active:scale-95 shrink-0"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              <Menu className="w-5 h-5 text-slate-700" />
             </button>
           </div>
         </div>
+      </header>
 
-        {/* Mobile Dropdown Nav Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-200/80 bg-white/98 backdrop-blur-md px-4 py-4 space-y-2 shadow-xl animate-in slide-in-from-top-2 duration-150">
-            <div className="space-y-1">
-              <button
-                onClick={() => {
-                  setActiveTab('home');
-                  setMobileMenuOpen(false);
-                }}
-                className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
-                  activeTab === 'home'
-                    ? 'bg-emerald-50 text-emerald-800 font-bold'
-                    : 'text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-700 flex items-center justify-center shrink-0">
-                  <Sparkles className="w-4 h-4" />
+      {/* Slide-Over Drawer Menu (Anchored to the Most Right with "X" Close Button Inside) */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex justify-end animate-in fade-in duration-150"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <div
+            className="w-full max-w-xs sm:max-w-sm bg-white border-l border-slate-200 h-full p-4 flex flex-col justify-between shadow-2xl relative animate-in slide-in-from-right duration-200 overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div>
+              {/* Header with Title and "X" Close Button Inside */}
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-200">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white flex items-center justify-center shadow-xs">
+                    <GraduationCap className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-1.5">
+                      <h3 className="font-bold text-slate-900 text-sm">Navigation Menu</h3>
+                      <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                        ET 🇪🇹
+                      </span>
+                    </div>
+                    <p className="text-[10px] text-slate-500 font-medium">ExitPrep Student Portal</p>
+                  </div>
                 </div>
-                <span>Overview</span>
-              </button>
 
-              <button
-                onClick={() => {
-                  setActiveTab('catalog');
-                  setMobileMenuOpen(false);
-                }}
-                className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
-                  activeTab === 'catalog'
-                    ? 'bg-emerald-50 text-emerald-800 font-bold'
-                    : 'text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-700 flex items-center justify-center shrink-0">
-                  <Layers className="w-4 h-4" />
-                </div>
-                <span>Exam Pathways & Blueprints</span>
-              </button>
+                {/* "X" Button Inside the Sidebar */}
+                <button
+                  type="button"
+                  onClick={() => setMobileMenuOpen(false)}
+                  aria-label="Close navigation menu"
+                  className="p-1.5 rounded-xl text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors min-h-[38px] min-w-[38px] flex items-center justify-center cursor-pointer active:scale-95"
+                >
+                  <X className="w-5 h-5 text-slate-600" />
+                </button>
+              </div>
 
-              <button
-                onClick={() => {
-                  setActiveTab('practice');
-                  setMobileMenuOpen(false);
-                }}
-                className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
-                  activeTab === 'practice'
-                    ? 'bg-emerald-50 text-emerald-800 font-bold'
-                    : 'text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-700 flex items-center justify-center shrink-0">
-                  <BookOpen className="w-4 h-4" />
+              {/* User Greeting / Quick Status if authenticated */}
+              {user && (
+                <div className="mb-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shrink-0">
+                    {user.fullName[0]}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-xs font-bold text-slate-900 truncate">{user.fullName}</div>
+                    <div className="text-[10px] text-slate-500 truncate">{user.email || user.phone}</div>
+                  </div>
+                  <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.5 rounded uppercase">
+                    {user.role}
+                  </span>
                 </div>
-                <span>Free Practice Questions</span>
-              </button>
+              )}
 
-              <button
-                onClick={() => {
-                  setActiveTab('pricing');
-                  setMobileMenuOpen(false);
-                }}
-                className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
-                  activeTab === 'pricing'
-                    ? 'bg-emerald-50 text-emerald-800 font-bold'
-                    : 'text-slate-700 hover:bg-slate-50'
-                }`}
-              >
-                <div className="w-7 h-7 rounded-lg bg-emerald-100/70 text-emerald-700 flex items-center justify-center shrink-0">
-                  <CreditCard className="w-4 h-4" />
-                </div>
-                <span>Subscriptions (CBE / Telebirr)</span>
-              </button>
+              {/* Navigation Items */}
+              <div className="space-y-1">
+                <button
+                  onClick={() => {
+                    setActiveTab('home');
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
+                    activeTab === 'home'
+                      ? 'bg-emerald-50 text-emerald-800 font-bold border border-emerald-200/60'
+                      : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                      activeTab === 'home' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1">
+                    <div>Overview</div>
+                    <div className="text-[10px] font-normal text-slate-500">National Exam Hub</div>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setActiveTab('catalog');
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
+                    activeTab === 'catalog'
+                      ? 'bg-emerald-50 text-emerald-800 font-bold border border-emerald-200/60'
+                      : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                      activeTab === 'catalog' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    <Layers className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1">
+                    <div>Exam Pathways</div>
+                    <div className="text-[10px] font-normal text-slate-500">Official Blueprints & Curricula</div>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setActiveTab('practice');
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
+                    activeTab === 'practice'
+                      ? 'bg-emerald-50 text-emerald-800 font-bold border border-emerald-200/60'
+                      : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                      activeTab === 'practice' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    <BookOpen className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <span>Free Practice</span>
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800">Free</span>
+                    </div>
+                    <div className="text-[10px] font-normal text-slate-500">Simulated questions with timer</div>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setActiveTab('pricing');
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
+                    activeTab === 'pricing'
+                      ? 'bg-emerald-50 text-emerald-800 font-bold border border-emerald-200/60'
+                      : 'text-slate-700 hover:bg-slate-50'
+                  }`}
+                >
+                  <div
+                    className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                      activeTab === 'pricing' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600'
+                    }`}
+                  >
+                    <CreditCard className="w-4 h-4" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <span>Subscriptions</span>
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800">CBE / Telebirr</span>
+                    </div>
+                    <div className="text-[10px] font-normal text-slate-500">Unlimited questions & full solutions</div>
+                  </div>
+                </button>
+
+                {user && (
+                  <button
+                    onClick={() => {
+                      setActiveTab('profile');
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`w-full text-left px-3.5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-3 transition-colors ${
+                      activeTab === 'profile'
+                        ? 'bg-emerald-50 text-emerald-800 font-bold border border-emerald-200/60'
+                        : 'text-slate-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${
+                        activeTab === 'profile' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600'
+                      }`}
+                    >
+                      <User className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1">
+                      <div>My Account</div>
+                      <div className="text-[10px] font-normal text-slate-500">Profile & subscription details</div>
+                    </div>
+                  </button>
+                )}
+              </div>
             </div>
 
-            <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
+            {/* Bottom Actions inside the Drawer */}
+            <div className="pt-4 border-t border-slate-100 flex flex-col gap-2">
               {!user ? (
                 <>
                   <button
@@ -1067,9 +1184,10 @@ export default function App() {
                       setShowAuthModal(true);
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full py-3 text-center text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-sm transition-all active:scale-98 min-h-[44px]"
+                    className="w-full py-3 text-center text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-xs transition-all active:scale-98 min-h-[44px] flex items-center justify-center gap-2"
                   >
-                    Create Free Student Account
+                    <GraduationCap className="w-4 h-4" />
+                    <span>Create Free Student Account</span>
                   </button>
 
                   <button
@@ -1079,24 +1197,55 @@ export default function App() {
                     }}
                     className="w-full py-2.5 text-center text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-colors min-h-[40px] flex items-center justify-center gap-1.5"
                   >
+                    <Zap className="w-3.5 h-3.5 text-emerald-600" />
                     <span>⚡ Quick Test Login (Demo Student)</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setAuthMode('login');
+                      setShowAuthModal(true);
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full py-2.5 text-center text-xs font-semibold text-slate-700 hover:bg-slate-100 rounded-xl transition-colors min-h-[40px] border border-slate-200"
+                  >
+                    Sign In Existing Account
                   </button>
                 </>
               ) : (
-                <button
-                  onClick={() => {
-                    setActiveTab('profile');
-                    setMobileMenuOpen(false);
-                  }}
-                  className="w-full py-2.5 text-center text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors min-h-[40px]"
-                >
-                  View My Profile ({user.fullName})
-                </button>
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={() => {
+                      setActiveTab('profile');
+                      setMobileMenuOpen(false);
+                    }}
+                    className="w-full py-2.5 text-center text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors min-h-[40px] flex items-center justify-center gap-2"
+                  >
+                    <User className="w-3.5 h-3.5 text-slate-600" />
+                    <span>View Profile ({user.fullName})</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      handleLogout();
+                    }}
+                    className="w-full py-2.5 text-center text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition-colors min-h-[40px] flex items-center justify-center gap-2"
+                  >
+                    <LogOut className="w-3.5 h-3.5 text-rose-600" />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
               )}
+
+              {/* Ethiopian MoE exit exam banner footnote */}
+              <div className="mt-1 text-center text-[10px] text-slate-400">
+                FDRE Ministry of Education Exit Exam Alignment
+              </div>
             </div>
           </div>
-        )}
-      </header>
+        </div>
+      )}
 
       {/* Content Body with bottom padding for mobile navigation */}
       <main className="flex-1 pb-28 md:pb-12">
