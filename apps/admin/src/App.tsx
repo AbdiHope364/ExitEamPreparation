@@ -958,42 +958,66 @@ export default function App() {
               )}
             </div>
 
-            {/* Mobile Navigation Drawer Toggle */}
-            <button
-              onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
-              aria-label="Toggle mobile operations menu"
-              className="lg:hidden p-2 text-slate-300 hover:text-white bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 rounded-xl transition-all cursor-pointer min-h-[38px] min-w-[38px] flex items-center justify-center relative active:scale-95"
-            >
-              {mobileDrawerOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-              {(pendingPaymentsCount > 0 || pendingQuestionsCount > 0) && (
-                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full ring-2 ring-slate-900"></span>
-              )}
-            </button>
-
-            {/* Sign Out Button (Desktop) */}
+            {/* Sign Out Button */}
             <button
               onClick={handleAdminLogout}
               aria-label="Sign out of operations console"
               title="Sign out of operations console"
-              className="hidden sm:flex p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-slate-800 hover:border-rose-500/30 rounded-xl transition-all cursor-pointer min-h-[38px] min-w-[38px] items-center justify-center active:scale-95"
+              className="hidden sm:flex p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-slate-800 hover:border-rose-500/30 rounded-xl transition-all cursor-pointer min-h-[38px] min-w-[38px] items-center justify-center active:scale-95 shrink-0"
             >
               <LogOut className="w-4 h-4" />
+            </button>
+
+            {/* Sidebar Button List (Most Right) */}
+            <button
+              onClick={() => setMobileDrawerOpen(!mobileDrawerOpen)}
+              aria-label="Open sidebar operations menu"
+              title="Open operations menu"
+              className="p-2 text-slate-200 hover:text-white bg-slate-800/90 hover:bg-slate-700 border border-slate-700 rounded-xl transition-all cursor-pointer min-h-[38px] min-w-[38px] flex items-center justify-center relative active:scale-95 shrink-0"
+            >
+              <Menu className="w-5 h-5 text-slate-200" />
+              {(pendingPaymentsCount > 0 || pendingQuestionsCount > 0) && (
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-amber-400 rounded-full ring-2 ring-slate-900"></span>
+              )}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Mobile Slide-Over Drawer Menu */}
+      {/* Slide-Over Drawer Menu (Anchored to the Most Right with "X" Close Button Inside) */}
       {mobileDrawerOpen && (
         <div
-          className="lg:hidden fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-sm animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex justify-end animate-in fade-in duration-150"
           onClick={() => setMobileDrawerOpen(false)}
         >
           <div
-            className="w-full max-w-xs bg-slate-900 border-r border-slate-800 h-full p-4 flex flex-col justify-between shadow-2xl relative animate-in slide-in-from-left duration-200 overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]"
+            className="w-full max-w-xs sm:max-w-sm bg-slate-900 border-l border-slate-800 h-full p-4 flex flex-col justify-between shadow-2xl relative animate-in slide-in-from-right duration-200 overflow-y-auto pb-[max(1rem,env(safe-area-inset-bottom))]"
             onClick={(e) => e.stopPropagation()}
           >
             <div>
+              {/* Header with Title and "X" Close Button Inside */}
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                    <Shield className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-white text-sm">Navigation Menu</h3>
+                    <p className="text-[10px] text-slate-400">ExitPrep Operations Console</p>
+                  </div>
+                </div>
+
+                {/* "X" Button Inside the Sidebar */}
+                <button
+                  type="button"
+                  onClick={() => setMobileDrawerOpen(false)}
+                  aria-label="Close sidebar menu"
+                  className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-slate-800 transition-colors min-h-[38px] min-w-[38px] flex items-center justify-center cursor-pointer active:scale-95"
+                >
+                  <X className="w-5 h-5 text-slate-200" />
+                </button>
+              </div>
+
               {/* Drawer User Profile Card */}
               <div className="p-3.5 rounded-2xl bg-slate-950 border border-slate-800 mb-4">
                 <div className="flex items-center gap-2.5 mb-2">
